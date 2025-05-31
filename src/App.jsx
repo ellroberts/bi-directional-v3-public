@@ -6,7 +6,7 @@ export default function App() {
     <PlanProvider>
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold text-indigo-600">
-          Testing OptionRow 1
+          Testing OptionRow 2
         </h1>
         <OptionRow
           groupId="test-group"
