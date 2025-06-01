@@ -30,9 +30,9 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
       <div className="w-[80px] px-1">{option.billing}</div>
       <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
-          <button onClick={() => updateQty(Math.max(0, qty - 1))} className="px-2 text-sm text-gray-500 h-full">−</button>
-          <div className="h-full w-[52px] text-sm border-x border-black font-medium flex items-center justify-center text-center">{qty}</div>
-          <button onClick={() => updateQty(qty + 1)} className="px-2 text-sm text-black h-full">+</button>
+          <button onClick={() => updateQty(Math.max(0, qty - 1))} className="px-2 text-sm text-gray-500 h-full bg-white">−</button>
+          <div className="h-full w-[52px] text-sm border-x border-black font-medium flex items-center justify-center text-center bg-white">{qty}</div>
+          <button onClick={() => updateQty(qty + 1)} className="px-2 text-sm text-black h-full bg-white">+</button>
         </div>
         {option.min ? <div className="text-xs text-gray-500 whitespace-nowrap">Min {option.min}</div> : null}
       </div>
