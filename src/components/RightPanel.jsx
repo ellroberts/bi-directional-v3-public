@@ -14,7 +14,8 @@ export default function RightPanel() {
       {/* Safeguard against empty selections */}
       {Object.entries(selected).map(([groupId, options]) =>
         Object.entries(options).map(([optionId, opt]) => {
-          const qty = opt.qty || 0;
+          const minQty = opt.min || 0;
+          const qty = opt.qty ?? minQty;
 
           return (
               <div
@@ -31,15 +32,18 @@ export default function RightPanel() {
                 <div className="flex-grow">
                   <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px] w-max">
                     <button
-                      className="px-2 text-sm text-gray-500 h-full bg-white"
-                      onClick={() =>
-                        addOrUpdate(groupId, optionId, {
-                          ...opt,
-                          qty: Math.max(0, qty - 1),
-                        })
-                      }
+                    disabled={qty <= minQty}
+                    onClick={() =>
+                    addOrUpdate(groupId, optionId, {
+                    ...opt,
+                    qty: qty - 1,
+                    })
+                    }
+                    className={`px-2 text-sm h-full bg-white ${
+                    qty <= minQty ? "text-gray-300 cursor-not-allowed" : "text-gray-500"
+                    }`}
                     >
-                      −
+                    −
                     </button>
                     <div className="h-full w-[52px] border-x border-black font-medium flex items-center justify-center text-center bg-white">
                       {qty}
