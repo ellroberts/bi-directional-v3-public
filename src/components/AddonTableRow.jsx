@@ -12,15 +12,16 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   const committedQty = current?.qty ?? null;
   const [inputQty, setInputQty] = useState(committedQty ?? minQty);
 
-  const parsedQty = parseInt(inputQty, 10);
-  const isValid = !isNaN(parsedQty) && parsedQty >= minQty;
-  const hasChanged = committedQty !== null && parsedQty !== committedQty;
-
+  // ✅ Update inputQty when committedQty or min changes
   useEffect(() => {
-    if (committedQty !== null) {
-      setInputQty(committedQty);
-    }
-  }, [committedQty]);
+    const fallback = option.min || 0;
+    setInputQty(committedQty ?? fallback);
+  }, [committedQty, option.min]);
+
+  const parsedQty = Number(inputQty);
+  const isQtyNumber = !isNaN(parsedQty);
+  const isValid = isQtyNumber && parsedQty >= minQty;
+  const hasChanged = isQtyNumber && parsedQty !== committedQty;
 
   const handleSave = () => {
     if (isValid) {
@@ -48,16 +49,20 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
       {/* Licence control */}
       <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
+          {/* Minus button */}
           <button
-            disabled={parsedQty <= minQty}
-            onClick={() => setInputQty(parsedQty - 1)}
+            disabled={!isQtyNumber || parsedQty <= minQty}
+            onClick={() => isQtyNumber && setInputQty(parsedQty - 1)}
             className={`px-2 text-sm h-full bg-white ${
-              parsedQty <= minQty ? "text-gray-300 cursor-not-allowed" : "text-gray-500"
+              !isQtyNumber || parsedQty <= minQty
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-gray-500"
             }`}
           >
             −
           </button>
 
+          {/* Quantity input */}
           <input
             type="number"
             inputMode="numeric"
@@ -67,8 +72,9 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
 
+          {/* Plus button */}
           <button
-            onClick={() => setInputQty(parsedQty + 1)}
+            onClick={() => isQtyNumber && setInputQty(parsedQty + 1)}
             className="px-2 text-sm text-black h-full bg-white"
           >
             +
@@ -101,14 +107,13 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             <FaTrash className="text-red-500 text-[14px]" />
           </button>
         ) : (
-          <button
-            className="w-full h-[32px] text-sm text-white px-2 rounded-md"
-            style={{ backgroundColor: "#A34796" }}
-            onClick={handleSave}
-            disabled={!isValid}
-          >
-            Add
-          </button>
+        <button
+        className="w-full h-[32px] text-sm px-2 rounded-md border bg-white text-[#A34796] border-[#A34796] hover:bg-[#fdf0fa]"
+        onClick={handleSave}
+        disabled={!isValid}
+        >
+        Add
+        </button>
         )}
       </div>
     </div>
