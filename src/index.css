@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .debug-border > * {
+      @apply border border-red-500;
+    }
+  
+    .debug-border-all * {
+      @apply border border-red-500;
+    }
+  
+    .debug-outline * {
+      outline: 1px solid red;
+    }
+  }

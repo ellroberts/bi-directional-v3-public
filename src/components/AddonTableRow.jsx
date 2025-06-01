@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { usePlan } from "./PlanContext";
+import { useDebug } from "./DebugContext"; // ⬅️ new import
 import { FaTrash } from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast }) {
   const { selected, addOrUpdate, remove } = usePlan();
+  const { isDebug } = useDebug(); // ⬅️ use debug toggle
   const current = selected[groupId]?.[option.id];
   const qty = current?.qty || 0;
 
@@ -22,53 +24,29 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   };
 
   return (
-    <div className={`grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 items-center py-3 ${!isLast ? 'border-b' : ''}`}>
-      <div>{index + 1}</div>
-      <div>{option.term}</div>
-      <div>{option.billing}</div>
-      <div className="flex items-center gap-2">
+    <div className={`flex items-center py-3 text-sm ${!isLast ? "border-b" : ""} ${isDebug ? "debug-border" : ""}`}>
+      <div className="w-[72px] px-1">{index + 1}</div>
+      <div className="w-[80px] px-1">{option.term}</div>
+      <div className="w-[80px] px-1">{option.billing}</div>
+      <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
-          <button
-            onClick={() => updateQty(Math.max(0, qty - 1))}
-            className="px-2 text-sm text-gray-500 h-full"
-          >
-            −
-          </button>
-          <div className="h-full w-[52px] text-sm border-x border-black font-medium flex items-center justify-center text-center">
-            {qty}
-          </div>
-          <button
-            onClick={() => updateQty(qty + 1)}
-            className="px-2 text-sm text-black h-full"
-          >
-            +
-          </button>
+          <button onClick={() => updateQty(Math.max(0, qty - 1))} className="px-2 text-sm text-gray-500 h-full bg-white">−</button>
+          <div className="h-full w-[52px] text-sm border-x border-black font-medium flex items-center justify-center text-center bg-white">{qty}</div>
+          <button onClick={() => updateQty(qty + 1)} className="px-2 text-sm text-black h-full bg-white">+</button>
         </div>
-        {option.min ? (
-          <div className="text-xs text-gray-500 whitespace-nowrap">Min {option.min}</div>
-        ) : null}
+        {option.min ? <div className="text-xs text-gray-500 whitespace-nowrap">Min {option.min}</div> : null}
       </div>
-      <div className="text-right">£{option.price}</div>
-      <div>
-        <div className="w-[88px] h-[32px]">
-          {current ? (
-            <button
-              className="w-full h-full flex items-center justify-center text-sm px-2 rounded-md border border-gray-300 bg-white"
-              onClick={() => updateQty(0)}
-              title="Remove"
-            >
-              <FaTrash className="text-red-500 text-[14px]" />
-            </button>
-          ) : (
-            <button
-              className="w-full h-full text-sm text-white px-2 rounded-md"
-              style={{ backgroundColor: '#A34796' }}
-              onClick={() => updateQty(option.min || 1)}
-            >
-              Add
-            </button>
-          )}
-        </div>
+      <div className="w-[48px] ml-2 mr-4 text-right px-1">£{option.price}</div>
+      <div className="w-[88px] px-1">
+        {current ? (
+          <button className="w-full h-[32px] flex items-center justify-center text-sm px-2 rounded-md border border-gray-300 bg-white" onClick={() => updateQty(0)} title="Remove">
+            <FaTrash className="text-red-500 text-[14px]" />
+          </button>
+        ) : (
+          <button className="w-full h-[32px] text-sm text-white px-2 rounded-md" style={{ backgroundColor: "#A34796" }} onClick={() => updateQty(option.min || 1)}>
+            Add
+          </button>
+        )}
       </div>
     </div>
   );
