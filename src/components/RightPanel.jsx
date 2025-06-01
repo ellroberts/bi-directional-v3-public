@@ -45,9 +45,22 @@ export default function RightPanel() {
                     >
                     −
                     </button>
-                    <div className="h-full w-[52px] border-x border-black font-medium flex items-center justify-center text-center bg-white">
-                      {qty}
-                    </div>
+                      <input
+                      type="number"
+                      inputMode="numeric"
+                      value={qty}
+                      onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      if (!isNaN(val)) {
+                      addOrUpdate(groupId, optionId, {
+                      ...opt,
+                      qty: Math.max(minQty, val),
+                      });
+                      }
+                      }}
+                      className="h-full w-[52px] text-center border-x border-black bg-white text-sm font-medium focus:outline-none
+                      [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      />
                     <button
                       className="px-2 text-sm text-black h-full bg-white"
                       onClick={() =>
