@@ -33,7 +33,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
 
   return (
     <div className={`mt-3 ${isDebug ? "debug-border" : ""}`}>
-      <h3 className="font-semibold text-sm mb-1">{opt.name || groupId}</h3>
+      {/* Removed the groupId/title */}
       <div className="text-sm text-gray-700">{`Option ${optionId} £${opt.price}`}</div>
       <div className="text-sm text-gray-500">{`${opt.term} / ${opt.billing}`}</div>
 
@@ -87,7 +87,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
           </button>
         ) : (
           <button
-            className="flex items-center justify-center text-sm px-4 py-2 rounded-md border border-gray-300 bg-white"
+            className="flex items-center justify-center text-sm px-4 py-2 rounded-md"
             onClick={handleRemove}
             title="Remove"
           >
