@@ -5,9 +5,10 @@ import { FaTrash } from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast }) {
   const { selected, addOrUpdate, remove } = usePlan();
-  const { isDebug } = useDebug(); // ⬅️ use debug toggle
+  const { isDebug } = useDebug();
   const current = selected[groupId]?.[option.id];
-  const qty = current?.qty || 0;
+  const minQty = option.min || 0;
+  const qty = current?.qty ?? minQty;
 
   useEffect(() => {
     if (option.min && qty < option.min) {
@@ -30,7 +31,16 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
       <div className="w-[80px] px-1">{option.billing}</div>
       <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
-          <button onClick={() => updateQty(Math.max(0, qty - 1))} className="px-2 text-sm text-gray-500 h-full bg-white">−</button>
+          <button
+          disabled={qty <= minQty}
+          onClick={() => updateQty(qty - 1)}
+          className={`px-2 text-sm h-full bg-white ${
+          qty <= minQty ? "text-gray-300 cursor-not-allowed" : "text-gray-500"
+          }`}
+          >
+          −
+          </button>
+
           <div className="h-full w-[52px] text-sm border-x border-black font-medium flex items-center justify-center text-center bg-white">{qty}</div>
           <button onClick={() => updateQty(qty + 1)} className="px-2 text-sm text-black h-full bg-white">+</button>
         </div>
