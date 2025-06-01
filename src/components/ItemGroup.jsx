@@ -12,7 +12,6 @@ export default function ItemGroup({ group, selectedCount }) {
         className="flex items-start justify-between cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {/* LEFT SIDE: Chevron + Title + Option Count */}
         <div className="flex items-start gap-2 flex-1 min-w-0">
           {isOpen ? (
             <FaChevronDown className="text-sm mt-1" />
@@ -26,8 +25,6 @@ export default function ItemGroup({ group, selectedCount }) {
             </div>
           </div>
         </div>
-
-        {/* RIGHT SIDE: Selected Count */}
         {selectedCount > 0 && (
           <div className="text-sm font-semibold text-black whitespace-nowrap ml-4">
             {selectedCount} selected
@@ -37,15 +34,18 @@ export default function ItemGroup({ group, selectedCount }) {
 
       {/* Expanded Options */}
       {isOpen && group.options.length > 0 && (
-        <>
-          <div className="grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 text-sm font-semibold text-gray-700 border-b py-2 mt-3">
-            <div>Option</div>
-            <div>Term</div>
-            <div>Billing</div>
-            <div>Licence</div>
-            <div className="text-right">Price</div>
-            <div></div>
+        <div className="mt-3 space-y-3 debug-border">
+          {/* Table Header */}
+          <div className="flex text-sm font-semibold text-gray-700 border-b pb-2">
+            <div className="w-[72px] px-1">Option</div>
+            <div className="w-[80px] px-1">Term</div>
+            <div className="w-[80px] px-1">Billing</div>
+            <div className="flex-grow px-1">Licence</div>
+            <div className="w-[48px] ml-2 mr-4 text-right px-1">Price</div>
+            <div className="w-[88px] px-1"></div>
           </div>
+
+          {/* Table Rows */}
           {group.options.map((opt, idx) => (
             <AddonTableRow
               key={opt.id}
@@ -55,7 +55,7 @@ export default function ItemGroup({ group, selectedCount }) {
               isLast={idx === group.options.length - 1}
             />
           ))}
-        </>
+        </div>
       )}
     </div>
   );

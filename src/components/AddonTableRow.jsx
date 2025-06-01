@@ -22,11 +22,24 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   };
 
   return (
-    <div className={`grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 items-center py-3 ${!isLast ? 'border-b' : ''}`}>
-      <div>{index + 1}</div>
-      <div>{option.term}</div>
-      <div>{option.billing}</div>
-      <div className="flex items-center gap-2">
+    <div className={`flex items-center py-3 text-sm ${!isLast ? "border-b" : ""} debug-border`}>
+      {/* Column 1: Index */}
+      <div className="w-[72px] px-1">
+        {index + 1}
+      </div>
+
+      {/* Column 2: Term */}
+      <div className="w-[80px] px-1">
+        {option.term}
+      </div>
+
+      {/* Column 3: Billing */}
+      <div className="w-[80px] px-1">
+        {option.billing}
+      </div>
+
+      {/* Column 4: Licence Controls */}
+      <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
           <button
             onClick={() => updateQty(Math.max(0, qty - 1))}
@@ -45,30 +58,36 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           </button>
         </div>
         {option.min ? (
-          <div className="text-xs text-gray-500 whitespace-nowrap">Min {option.min}</div>
+          <div className="text-xs text-gray-500 whitespace-nowrap">
+            Min {option.min}
+          </div>
         ) : null}
       </div>
-      <div className="text-right">£{option.price}</div>
-      <div>
-        <div className="w-[88px] h-[32px]">
-          {current ? (
-            <button
-              className="w-full h-full flex items-center justify-center text-sm px-2 rounded-md border border-gray-300 bg-white"
-              onClick={() => updateQty(0)}
-              title="Remove"
-            >
-              <FaTrash className="text-red-500 text-[14px]" />
-            </button>
-          ) : (
-            <button
-              className="w-full h-full text-sm text-white px-2 rounded-md"
-              style={{ backgroundColor: '#A34796' }}
-              onClick={() => updateQty(option.min || 1)}
-            >
-              Add
-            </button>
-          )}
-        </div>
+
+      {/* Column 5: Price */}
+      <div className="w-[48px] ml-2 mr-4 text-right px-1">
+        £{option.price}
+      </div>
+
+      {/* Column 6: Add/Remove Button */}
+      <div className="w-[88px] px-1">
+        {current ? (
+          <button
+            className="w-full h-[32px] flex items-center justify-center text-sm px-2 rounded-md border border-gray-300 bg-white"
+            onClick={() => updateQty(0)}
+            title="Remove"
+          >
+            <FaTrash className="text-red-500 text-[14px]" />
+          </button>
+        ) : (
+          <button
+            className="w-full h-[32px] text-sm text-white px-2 rounded-md"
+            style={{ backgroundColor: "#A34796" }}
+            onClick={() => updateQty(option.min || 1)}
+          >
+            Add
+          </button>
+        )}
       </div>
     </div>
   );
