@@ -1,9 +1,11 @@
 import React from "react";
 import { usePlan } from "./PlanContext";
 import { FaTrash } from "react-icons/fa";
+import { useDebug } from "./DebugContext";
 
 export default function RightPanel() {
   const { selected, remove, addOrUpdate } = usePlan();
+  const { isDebug } = useDebug();
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
@@ -15,10 +17,11 @@ export default function RightPanel() {
           const qty = opt.qty || 0;
 
           return (
-            <div
-              key={`${groupId}-${optionId}`}
-              className="mb-4"
-            >
+              <div
+              className={`mt-3 ${
+              isDebug ? "debug-border" : ""
+              }`}
+              >
               <h3 className="font-semibold text-sm mb-1">{opt.name || groupId}</h3>
               <div className="text-sm text-gray-700">{`Option ${optionId} £${opt.price}`}</div>
               <div className="text-sm text-gray-500">{`${opt.term} / ${opt.billing}`}</div>

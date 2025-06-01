@@ -5,7 +5,7 @@ import { useDebug } from "./DebugContext";
 
 export default function ItemGroup({ group, selectedCount }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { isDebug } = useDebug(); // ✅ use debug flag
+  const { isDebug } = useDebug();
 
   return (
     <div className="border-b pb-4 mb-6">
