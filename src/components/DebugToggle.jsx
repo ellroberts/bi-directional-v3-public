@@ -5,7 +5,7 @@ export default function DebugToggle() {
   const { isDebug, setIsDebug } = useDebug();
 
   return (
-    <div className="mb-4">
+    <div className="fixed bottom-4 left-4 z-50">
       <button
         onClick={() => setIsDebug(!isDebug)}
         className={`text-sm px-4 py-1 rounded-md transition-all ${
@@ -14,7 +14,7 @@ export default function DebugToggle() {
             : "bg-gray-100 text-gray-700 border border-gray-300"
         } hover:shadow`}
       >
-        {isDebug ? "🔴 Hide Debug Redlines" : "⚪️ Show Debug Redlines"}
+        {isDebug ? "Hide Redlines" : "Show Redlines"}
       </button>
     </div>
   );
