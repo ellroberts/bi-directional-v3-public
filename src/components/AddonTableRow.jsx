@@ -12,7 +12,6 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   const committedQty = current?.qty ?? null;
   const [inputQty, setInputQty] = useState(committedQty ?? minQty);
 
-  // ✅ Update inputQty when committedQty or min changes
   useEffect(() => {
     const fallback = option.min || 0;
     setInputQty(committedQty ?? fallback);
@@ -49,7 +48,6 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
       {/* Licence control */}
       <div className="flex items-center gap-2 flex-grow px-1">
         <div className="flex items-center rounded-md border border-black overflow-hidden text-sm h-[32px]">
-          {/* Minus button */}
           <button
             disabled={!isQtyNumber || parsedQty <= minQty}
             onClick={() => isQtyNumber && setInputQty(parsedQty - 1)}
@@ -62,7 +60,6 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             −
           </button>
 
-          {/* Quantity input */}
           <input
             type="number"
             inputMode="numeric"
@@ -72,7 +69,6 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
 
-          {/* Plus button */}
           <button
             onClick={() => isQtyNumber && setInputQty(parsedQty + 1)}
             className="px-2 text-sm text-black h-full bg-white"
@@ -107,13 +103,17 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             <FaTrash className="text-red-500 text-[14px]" />
           </button>
         ) : (
-        <button
-        className="w-full h-[32px] text-sm px-2 rounded-md border bg-white text-[#A34796] border-[#A34796] hover:bg-[#fdf0fa]"
-        onClick={handleSave}
-        disabled={!isValid}
-        >
-        Add
-        </button>
+          <button
+          className={`w-full h-[32px] text-sm px-2 rounded-md bg-white hover:bg-[#fdf0fa] ${
+            !isValid || parsedQty === 0
+              ? "border border-gray-300 text-gray-400 cursor-not-allowed"
+              : "border-2 border-[#A34796] text-[#A34796]"
+          }`}          
+            onClick={handleSave}
+            disabled={!isValid || parsedQty === 0}
+          >
+            Add
+          </button>
         )}
       </div>
     </div>

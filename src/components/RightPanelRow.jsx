@@ -78,7 +78,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
         {/* Add / Update / Remove */}
         {hasChanged ? (
           <button
-            className="flex items-center justify-center text-sm px-4 py-2 rounded-md text-white"
+            className="flex items-center justify-center text-sm px-4 py-1.5 rounded-md text-white"
             style={{ backgroundColor: "#A34796" }}
             onClick={handleSave}
             disabled={!isValid}
