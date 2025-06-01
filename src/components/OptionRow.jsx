@@ -5,6 +5,7 @@ import { FaTrash } from "react-icons/fa";
 export default function OptionRow({ groupId, option }) {
   const { selected, addOrUpdate, remove } = usePlan();
   const current = selected[groupId]?.[option.id];
+
   const [qty, setQty] = useState(current?.qty || 0);
 
   useEffect(() => {
@@ -25,38 +26,30 @@ export default function OptionRow({ groupId, option }) {
   };
 
   return (
-    <div className="flex items-center justify-between border p-4 rounded shadow-sm bg-white max-w-xl mb-4">
-      <div>
-        <h3 className="font-semibold text-lg text-gray-800">{option.name}</h3>
-        <p className="text-sm text-gray-600">ID: {option.id}</p>
-        <p className="text-sm text-gray-600">Price: £{option.price.toFixed(2)}</p>
-        <p className="text-sm text-gray-600">Min: {option.min}</p>
+    <div className="flex items-center gap-2 my-2">
+      <div className="flex gap-2 items-center border px-2 py-1 rounded">
+        <button onClick={() => handleUpdate(Math.max(0, qty - 1))}>−</button>
+        <span>{qty}</span>
+        <button onClick={() => handleUpdate(qty + 1)}>+</button>
       </div>
-
-      <div className="flex items-center space-x-2">
+      <span>£{option.price}</span>
+      {current ? (
         <button
-          onClick={() => handleUpdate(Math.max(0, qty - 1))}
-          className="px-3 py-1 text-sm font-medium bg-gray-200 rounded hover:bg-gray-500"
+          className="w-[64px] ml-auto flex items-center justify-center text-sm px-4 py-2 rounded-md border border-gray-300 bg-white"
+          onClick={() => handleUpdate(0)}
+          title="Remove"
         >
-          –
+          <FaTrash className="text-red-500 text-sm" />
         </button>
-        <span className="px-3 text-sm font-semibold">{qty}</span>
+      ) : (
         <button
-          onClick={() => handleUpdate(qty + 1)}
-          className="px-3 py-1 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+          className="w-[64px] ml-auto text-sm text-white px-4 py-2 rounded-md"
+          style={{ backgroundColor: '#A34796' }}
+          onClick={() => handleUpdate(option.min || 1)}
         >
-          +
+          Add
         </button>
-        {qty > 0 && (
-          <button
-            onClick={() => handleUpdate(0)}
-            className="text-red-500 ml-2"
-            title="Remove"
-          >
-            <FaTrash />
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 }
