@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { usePlan } from "./PlanContext";
 import ItemGroup from "./ItemGroup";
 
@@ -47,6 +46,14 @@ const data = [
 
 export default function LeftPanel() {
   const { selected } = usePlan();
+  const [openGroups, setOpenGroups] = useState({});
+
+  const toggleGroup = (groupId) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [groupId]: !prev[groupId],
+    }));
+  };
 
   return (
     <div>
@@ -60,6 +67,8 @@ export default function LeftPanel() {
             key={group.id}
             group={group}
             selectedCount={selectedCount}
+            isOpen={!!openGroups[group.id]}
+            onToggle={() => toggleGroup(group.id)}
           />
         );
       })}
