@@ -1,5 +1,7 @@
+import React from "react";
 import { PlanProvider } from './components/PlanContext';
 import OptionRow from './components/OptionRow';
+import LeftPanel from "./components/LeftPanel";
 
 export default function App() {
   return (
