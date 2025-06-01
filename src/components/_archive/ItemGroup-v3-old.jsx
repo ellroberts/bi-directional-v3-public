@@ -7,35 +7,28 @@ export default function ItemGroup({ group, selectedCount }) {
 
   return (
     <div className="border-b pb-4 mb-6">
-      {/* Header */}
       <div
-        className="flex items-start justify-between cursor-pointer"
+        className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {/* LEFT SIDE: Chevron + Title + Option Count */}
-        <div className="flex items-start gap-2 flex-1 min-w-0">
+        <div className="flex items-center gap-2">
           {isOpen ? (
-            <FaChevronDown className="text-sm mt-1" />
+            <FaChevronDown className="text-sm" />
           ) : (
-            <FaChevronRight className="text-sm mt-1" />
+            <FaChevronRight className="text-sm" />
           )}
-          <div className="flex flex-col">
-            <div className="font-semibold truncate">{group.name}</div>
-            <div className="text-sm text-gray-500">
-              {group.options.length} options available
-            </div>
-          </div>
+          <div className="font-semibold">{group.name}</div>
         </div>
-
-        {/* RIGHT SIDE: Selected Count */}
+        <div className="text-sm text-gray-500">
+          {group.options.length} options available
+        </div>
         {selectedCount > 0 && (
-          <div className="text-sm font-semibold text-black whitespace-nowrap ml-4">
+          <div className="text-sm font-semibold text-black ml-4">
             {selectedCount} selected
           </div>
         )}
       </div>
 
-      {/* Expanded Options */}
       {isOpen && group.options.length > 0 && (
         <>
           <div className="grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 text-sm font-semibold text-gray-700 border-b py-2 mt-3">
