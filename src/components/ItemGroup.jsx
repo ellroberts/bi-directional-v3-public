@@ -7,12 +7,16 @@ export default function ItemGroup({ group, selectedCount }) {
   const [isOpen, setIsOpen] = useState(false);
   const { isDebug } = useDebug();
 
+  const handleToggle = () => setIsOpen((prev) => !prev);
+
+  const showSelectedCount = !isOpen && selectedCount > 0;
+
   return (
     <div className="border-b pb-4 mb-6">
       {/* Header */}
       <div
         className="flex items-start justify-between cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
         <div className="flex items-start gap-2 flex-1 min-w-0">
           {isOpen ? (
@@ -27,7 +31,8 @@ export default function ItemGroup({ group, selectedCount }) {
             </div>
           </div>
         </div>
-        {selectedCount > 0 && (
+
+        {showSelectedCount && (
           <div className="text-sm font-semibold text-black whitespace-nowrap ml-4">
             {selectedCount} selected
           </div>
@@ -36,7 +41,11 @@ export default function ItemGroup({ group, selectedCount }) {
 
       {/* Expanded Options */}
       {isOpen && group.options.length > 0 && (
-        <div className={`mt-3 space-y-3 bg-gray-100 rounded-md px-4 py-3 mx-2 ${isDebug ? "debug-border" : ""}`}>
+        <div
+          className={`mt-3 space-y-3 bg-gray-100 rounded-md px-4 py-3 mx-2 ${
+            isDebug ? "debug-border" : ""
+          }`}
+        >
           {/* Table Header */}
           <div className="flex text-sm font-semibold text-gray-700 border-b pb-2">
             <div className="w-[72px] px-1">Option</div>
