@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { usePlan } from "./PlanContext";
-import { useDebug } from "./DebugContext"; // ⬅️ new import
+import { useDebug } from "./DebugContext";
 import { FaTrash } from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast }) {

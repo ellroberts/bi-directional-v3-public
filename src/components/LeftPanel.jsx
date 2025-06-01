@@ -1,6 +1,6 @@
 import React from "react";
 import { usePlan } from "./PlanContext";
-import ItemGroup from "./ItemGroup"; // ✅ use the component you already built
+import ItemGroup from "./ItemGroup";
 
 const data = [
   {
