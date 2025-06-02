@@ -15,7 +15,7 @@ export default function RightPanel() {
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-4">Title</h2>
+      <h2 className="text-lg font-bold mb-4">Order summary</h2>
 
       {Object.entries(groupLabels).map(([groupId, label]) => {
         const options = selected[groupId];
