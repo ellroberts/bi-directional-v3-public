@@ -78,7 +78,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
         ) : null}
       </div>
 
-      <div className="w-[48px] ml-2 mr-4 text-right px-1">£{option.price}</div>
+      <div className="w-[48px] ml-2 mr-4 text-left px-1">£{option.price}</div>
 
       <div className="w-[88px] px-1">
         {current && hasChanged ? (

@@ -45,7 +45,7 @@ export default function ItemGroup({ group, selectedCount }) {
             <div className="w-[80px] px-1">Term</div>
             <div className="w-[80px] px-1">Billing</div>
             <div className="flex-grow px-1">Licence</div>
-            <div className="w-[48px] ml-2 mr-4 text-right px-1">Price</div>
+            <div className="w-[48px] ml-2 mr-4 text-left px-1">Price</div>
             <div className="w-[88px] px-1"></div>
           </div>
 
