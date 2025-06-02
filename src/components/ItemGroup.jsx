@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
-import { useDebug } from "./DebugContext";
 
 export default function ItemGroup({ group, selectedCount }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { isDebug } = useDebug();
 
   const handleToggle = () => setIsOpen((prev) => !prev);
-
   const showSelectedCount = !isOpen && selectedCount > 0;
 
   return (
@@ -41,18 +38,14 @@ export default function ItemGroup({ group, selectedCount }) {
 
       {/* Expanded Options */}
       {isOpen && group.options.length > 0 && (
-        <div
-          className={`mt-3 space-y-3 bg-gray-100 rounded-md px-4 py-3 mx-2 ${
-            isDebug ? "debug-border" : ""
-          }`}
-        >
+        <div className="mt-3 space-y-3 bg-gray-100 rounded-md px-4 py-3 mx-2">
           {/* Table Header */}
           <div className="flex text-sm font-semibold text-gray-700 border-b pb-2">
             <div className="w-[72px] px-1">Option</div>
             <div className="w-[80px] px-1">Term</div>
             <div className="w-[80px] px-1">Billing</div>
             <div className="flex-grow px-1">Licence</div>
-            <div className="w-[48px] ml-2 mr-4 text-right px-1">Price</div>
+            <div className="w-[48px] ml-2 mr-4 text-left px-1">Price</div>
             <div className="w-[88px] px-1"></div>
           </div>
 

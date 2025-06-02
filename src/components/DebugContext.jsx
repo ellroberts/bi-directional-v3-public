@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState } from "react";
 
-const DebugContext = createContext(false);
+const DebugContext = createContext();
 
 export const useDebug = () => useContext(DebugContext);
 
 export function DebugProvider({ children }) {
-  const [isDebug, setIsDebug] = useState(false);
+  const [isRedline, setIsRedline] = useState(false); // ✅ Redlines only
 
   return (
-    <DebugContext.Provider value={{ isDebug, setIsDebug }}>
+    <DebugContext.Provider value={{ isRedline, setIsRedline }}>
       {children}
     </DebugContext.Provider>
   );
