@@ -1,41 +1,7 @@
 import React from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import * as Select from "@radix-ui/react-select";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
-
-// Reusable Select component (no portal)
-export function RadixSelect({ placeholder }) {
-  return (
-    <Select.Root>
-      <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 border rounded text-sm w-[160px]">
-        <Select.Value placeholder={placeholder} />
-        <Select.Icon>
-          <FaChevronDown className="text-xs ml-1" />
-        </Select.Icon>
-      </Select.Trigger>
-
-      <Select.Content
-        className="bg-white border rounded shadow p-1 z-50 min-w-[var(--radix-select-trigger-width)]"
-        position="popper"
-      >
-        <Select.Viewport>
-          <Select.Item
-            value="option-1"
-            className="px-2 py-1 text-sm hover:bg-gray-100 cursor-pointer"
-          >
-            Option 1
-          </Select.Item>
-          <Select.Item
-            value="option-2"
-            className="px-2 py-1 text-sm hover:bg-gray-100 cursor-pointer"
-          >
-            Option 2
-          </Select.Item>
-        </Select.Viewport>
-      </Select.Content>
-    </Select.Root>
-  );
-}
+import { FaSearch } from "react-icons/fa";
+import TypeMultiSelect from "./TypeMultiSelect"; // adjust path if needed
 
 export default function TopSection() {
   return (
@@ -72,7 +38,7 @@ export default function TopSection() {
           {/* Filter by Type */}
           <div>
             <div className="text-sm font-medium mb-1">Type</div>
-            <RadixSelect placeholder="Select" />
+            <TypeMultiSelect />
           </div>
 
           {/* Search Input */}
