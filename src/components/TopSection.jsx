@@ -28,7 +28,7 @@ export default function TopSection() {
     >
       {/* Outer circle */}
       <div
-        className="h-4 w-4 rounded-full border border-gray-400 flex items-center justify-center
+        className="h-4 w-4 bg-white rounded-full border border-gray-400 flex items-center justify-center
                    group-data-[state=checked]:border-black"
       >
         {/* Inner circle */}
