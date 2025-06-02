@@ -10,10 +10,10 @@ export default function App() {
   return (
     <PlanProvider>
       <DebugProvider>
-        {/* ✅ Top full-width section */}
-        <TopSection />
-
         <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-4">
+          {/* ✅ Top section will now match width of content */}
+          <TopSection />
+
           {/* Debug toggle button */}
           <DebugToggle />
 
