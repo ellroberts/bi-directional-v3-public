@@ -12,25 +12,39 @@ export default function TopSection() {
         {/* View Filter */}
         <div>
           <div className="text-sm font-medium mb-1">View</div>
-          <RadioGroup.Root defaultValue="popular" className="flex gap-4">
-            <RadioGroup.Item
-              value="popular"
-              className="flex items-center gap-1 text-sm"
-            >
-              <div className="h-4 w-4 rounded-full border-2 border-black flex items-center justify-center">
-                <div className="h-2 w-2 bg-black rounded-full" />
-              </div>
-              <span className="font-bold">Popular (500)</span>
-            </RadioGroup.Item>
+          <RadioGroup.Root
+  defaultValue="popular"
+  className="flex gap-6"
+  aria-label="View Filter"
+>
+  {[
+    { label: "Popular (500)", value: "popular", bold: true },
+    { label: "All (1000)", value: "all", bold: false },
+  ].map(({ label, value, bold }) => (
+    <RadioGroup.Item
+      key={value}
+      value={value}
+      className="flex items-center gap-2 cursor-pointer group"
+    >
+      {/* Outer circle */}
+      <div
+        className="h-4 w-4 rounded-full border border-gray-400 flex items-center justify-center
+                   group-data-[state=checked]:border-black"
+      >
+        {/* Inner circle */}
+        <div
+          className="h-2 w-2 rounded-full bg-transparent group-data-[state=checked]:bg-black"
+        />
+      </div>
 
-            <RadioGroup.Item
-              value="all"
-              className="flex items-center gap-1 text-sm text-gray-700"
-            >
-              <div className="h-4 w-4 rounded-full border border-gray-400" />
-              <span>All (1000)</span>
-            </RadioGroup.Item>
-          </RadioGroup.Root>
+      {/* Label */}
+      <span className={`text-sm ${bold ? "font-bold" : "text-gray-700"}`}>
+        {label}
+      </span>
+    </RadioGroup.Item>
+  ))}
+</RadioGroup.Root>
+
         </div>
 
         {/* Type + Search Grouped */}

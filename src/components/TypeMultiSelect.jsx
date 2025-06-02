@@ -23,9 +23,9 @@ export default function TypeMultiSelect() {
       </Popover.Trigger>
 
       <Popover.Content
-        className="bg-white border rounded shadow p-2 z-50 mt-2 w-[200px]"
-        sideOffset={4}
-      >
+  className="bg-white border rounded shadow p-2 z-50 min-w-[var(--radix-popover-trigger-width)]"
+  sideOffset={4}
+>
         {FILTER_OPTIONS.map((label) => (
           <label
             key={label}
