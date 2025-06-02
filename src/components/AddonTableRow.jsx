@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { usePlan } from "./PlanContext";
-import { useDebug } from "./DebugContext";
 import { FaTrash } from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast }) {
   const { selected, addOrUpdate, remove } = usePlan();
-  const { isDebug } = useDebug();
 
   const current = selected[groupId]?.[option.id];
   const minQty = option.min || 0;
@@ -37,9 +35,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
   return (
     <div
-      className={`flex items-center py-3 text-sm ${
-        !isLast ? "border-b" : ""
-      } ${isDebug ? "debug-border" : ""}`}
+      className={`flex items-center py-3 text-sm ${!isLast ? "border-b" : ""}`}
     >
       <div className="w-[72px] px-1">{index + 1}</div>
       <div className="w-[80px] px-1">{option.term}</div>
@@ -104,11 +100,11 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           </button>
         ) : (
           <button
-          className={`w-full h-[32px] text-sm px-2 rounded-md bg-white hover:bg-[#fdf0fa] ${
-            !isValid || parsedQty === 0
-              ? "border border-gray-300 text-gray-400 cursor-not-allowed"
-              : "border-2 border-[#A34796] text-[#A34796]"
-          }`}          
+            className={`w-full h-[32px] text-sm px-2 rounded-md bg-white hover:bg-[#fdf0fa] ${
+              !isValid || parsedQty === 0
+                ? "border border-gray-300 text-gray-400 cursor-not-allowed"
+                : "border-2 border-[#A34796] text-[#A34796]"
+            }`}
             onClick={handleSave}
             disabled={!isValid || parsedQty === 0}
           >

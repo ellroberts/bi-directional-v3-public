@@ -1,11 +1,9 @@
 import React from "react";
 import { usePlan } from "./PlanContext";
-import { useDebug } from "./DebugContext";
 import RightPanelRow from "./RightPanelRow";
 
 export default function RightPanel() {
   const { selected } = usePlan();
-  const { isDebug } = useDebug();
 
   const groupLabels = {
     ms365: "MS365 Business Basic",
@@ -31,13 +29,12 @@ export default function RightPanel() {
                   groupId={groupId}
                   optionId={optionId}
                   opt={opt}
-                  isDebug={isDebug}
                 />
               ))}
             </div>
-              <div className="pt-4 mb-4">
+            <div className="pt-4 mb-4">
               <hr className="border-t-1 border-gray-300" />
-              </div>
+            </div>
           </div>
         );
       })}

@@ -19,3 +19,8 @@
   body {
     @apply bg-gray-100;
   }
+
+  /* Global redline utility */
+.debug-all * {
+  outline: 1px solid red !important;
+}
