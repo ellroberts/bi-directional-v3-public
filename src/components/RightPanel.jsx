@@ -14,7 +14,7 @@ export default function RightPanel() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg">
+    <div className="p-4 rounded-lg">
       <h2 className="text-lg font-bold mb-4">Order summary</h2>
 
       {Object.entries(groupLabels).map(([groupId, label]) => {
