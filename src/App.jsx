@@ -14,7 +14,7 @@ export default function App() {
   return (
     <PlanProvider>
       <DebugProvider>
-        <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-4 min-h-screen bg-gray-50">
+        <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-4 min-h-screen">
 
           {/* Top section */}
           <TopSection />
