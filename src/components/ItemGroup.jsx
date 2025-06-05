@@ -1,12 +1,30 @@
+
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
+import { usePlan } from "./PlanContext";
 
-export default function ItemGroup({ group, selectedCount }) {
+export default function ItemGroup({ group }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { selected, remove } = usePlan();
 
   const handleToggle = () => setIsOpen((prev) => !prev);
-  const showSelectedCount = !isOpen && selectedCount > 0;
+
+  const groupId = group.id;
+  const selectedOptions = selected[groupId] || {};
+  const selectedOptionCount = Object.keys(selectedOptions).length;
+  const totalQuantity = Object.values(selectedOptions).reduce(
+    (sum, option) => sum + (parseInt(option.qty, 10) || 0),
+    0
+  );
+
+  const showClearAll = selectedOptionCount > 1;
+
+  const handleClear = () => {
+    Object.keys(selectedOptions).forEach((optionId) => {
+      remove(groupId, optionId);
+    });
+  };
 
   return (
     <div className="border-b pb-4 mb-6">
@@ -29,36 +47,58 @@ export default function ItemGroup({ group, selectedCount }) {
           </div>
         </div>
 
-        {showSelectedCount && (
-          <div className="text-sm font-semibold text-black whitespace-nowrap ml-4">
-            {selectedCount} selected
+        {/* Top-right "X selected" and Clear All (only if more than 1 selected) */}
+        {!isOpen && totalQuantity > 0 && (
+          <div className="flex items-center gap-3 text-sm text-gray-600 whitespace-nowrap">
+            <span>{totalQuantity} selected</span>
+            {showClearAll && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClear();
+                }}
+                className="text-xs text-red-500 hover:underline"
+              >
+                Clear All
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {/* Expanded Options */}
+      {/* Table header */}
       {isOpen && group.options.length > 0 && (
-        <div className="mt-3 space-y-3 bg-gray-100 rounded-md px-4 py-3 mx-2">
-          {/* Table Header */}
-          <div className="flex text-sm font-semibold text-gray-700 border-b pb-2">
-            <div className="w-[72px] px-1">Option</div>
-            <div className="w-[80px] px-1">Term</div>
-            <div className="w-[80px] px-1">Billing</div>
-            <div className="flex-grow px-1">Licence</div>
-            <div className="w-[48px] ml-2 mr-4 text-left px-1">Price</div>
-            <div className="w-[88px] px-1"></div>
-          </div>
+        <div className="grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 text-sm font-semibold text-gray-700 border-b py-2 mt-3">
+          <div>Option</div>
+          <div>Term</div>
+          <div>Billing</div>
+          <div>Licence</div>
+          <div className="text-right">Price</div>
+          <div></div>
+        </div>
+      )}
 
-          {/* Table Rows */}
-          {group.options.map((opt, idx) => (
-            <AddonTableRow
-              key={opt.id}
-              index={idx}
-              groupId={group.id}
-              option={opt}
-              isLast={idx === group.options.length - 1}
-            />
-          ))}
+      {/* Option rows */}
+      {isOpen &&
+        group.options.map((option, index) => (
+          <AddonTableRow
+            key={option.id}
+            option={option}
+            groupId={groupId}
+            index={index}
+            isLast={index === group.options.length - 1}
+          />
+        ))}
+
+      {/* Bottom Clear All (expanded state, only if more than 1 selected) */}
+      {isOpen && showClearAll && (
+        <div className="pt-2 text-right">
+          <button
+            onClick={handleClear}
+            className="text-xs text-red-500 hover:underline"
+          >
+            Clear All
+          </button>
         </div>
       )}
     </div>
