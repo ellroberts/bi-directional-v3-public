@@ -42,7 +42,7 @@ export default function RightPanel() {
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">Order summary</h2>
 
-      {Object.entries(groupLabels).map(([groupId, label], idx) => {
+      {Object.entries(groupLabels).map(([groupId, label]) => {
         const options = selected[groupId];
         if (!options || Object.keys(options).length === 0) return null;
 
@@ -50,7 +50,7 @@ export default function RightPanel() {
         const optionCount = Object.keys(options).length;
 
         return (
-          <div key={groupId} className="mb-2">
+          <div key={groupId} className="mb-6">
             {/* Header */}
             <div
               className="flex items-start justify-between cursor-pointer"
@@ -84,13 +84,6 @@ export default function RightPanel() {
                     opt={opt}
                   />
                 ))}
-              </div>
-            )}
-
-            {/* Divider */}
-            {idx < Object.keys(groupLabels).length - 1 && (
-              <div className="pt-4">
-                <hr className="border-t border-gray-300" />
               </div>
             )}
           </div>
