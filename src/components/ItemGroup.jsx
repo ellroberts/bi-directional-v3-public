@@ -44,10 +44,14 @@ export default function ItemGroup({ group }) {
             <div className="text-sm text-gray-500">
               {group.options.length} options available
             </div>
+            {!isOpen && selectedOptionCount > 0 && (
+              <div className="text-xs text-gray-400">
+                {selectedOptionCount} option{selectedOptionCount > 1 ? "s" : ""} selected
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Top-right "X selected" and Clear All (only if more than 1 selected) */}
         {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center gap-3 text-sm text-gray-600 whitespace-nowrap">
             <span>{totalQuantity} selected</span>
@@ -66,31 +70,31 @@ export default function ItemGroup({ group }) {
         )}
       </div>
 
-      {/* Table header */}
+      {/* Bordered container wrapping header + rows */}
       {isOpen && group.options.length > 0 && (
-        <div className="grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 text-sm font-semibold text-gray-700 border-b py-2 mt-3">
-          <div>Option</div>
-          <div>Term</div>
-          <div>Billing</div>
-          <div>Licence</div>
-          <div className="text-right">Price</div>
-          <div></div>
+        <div className="border border-gray-300 rounded-md overflow-hidden mt-3">
+          <div className="grid grid-cols-6 lg:grid-cols-[40px_110px_90px_1fr_70px_70px] gap-2 px-4 gap-2 px-4 text-sm font-semibold text-gray-700 bg-gray-50 border-b py-2 px-4">
+            <div>Option</div>
+            <div>Term</div>
+            <div>Billing</div>
+            <div>Licence</div>
+            <div className="text-left">Price</div>
+            <div></div>
+          </div>
+
+          {group.options.map((option, index) => (
+            <AddonTableRow
+              key={option.id}
+              option={option}
+              groupId={groupId}
+              index={index}
+              isLast={index === group.options.length - 1}
+            />
+          ))}
         </div>
       )}
 
-      {/* Option rows */}
-      {isOpen &&
-        group.options.map((option, index) => (
-          <AddonTableRow
-            key={option.id}
-            option={option}
-            groupId={groupId}
-            index={index}
-            isLast={index === group.options.length - 1}
-          />
-        ))}
-
-      {/* Bottom Clear All (expanded state, only if more than 1 selected) */}
+      {/* Bottom Clear All (expanded view) */}
       {isOpen && showClearAll && (
         <div className="pt-2 text-right">
           <button
