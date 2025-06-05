@@ -12,11 +12,13 @@ export default function ItemGroup({ group }) {
 
   const groupId = group.id;
   const selectedOptions = selected[groupId] || {};
+  const selectedOptionCount = Object.keys(selectedOptions).length;
   const totalQuantity = Object.values(selectedOptions).reduce(
     (sum, option) => sum + (parseInt(option.qty, 10) || 0),
     0
   );
-  const showSelectedCount = totalQuantity > 0;
+
+  const showClearAll = selectedOptionCount > 1;
 
   const handleClear = () => {
     Object.keys(selectedOptions).forEach((optionId) => {
@@ -45,19 +47,21 @@ export default function ItemGroup({ group }) {
           </div>
         </div>
 
-        {/* Top-right "X selected" and Clear */}
-        {!isOpen && showSelectedCount && (
+        {/* Top-right "X selected" and Clear All (only if more than 1 selected) */}
+        {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center gap-3 text-sm text-gray-600 whitespace-nowrap">
             <span>{totalQuantity} selected</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClear();
-              }}
-              className="text-xs text-red-500 hover:underline"
-            >
-              Clear all
-            </button>
+            {showClearAll && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClear();
+                }}
+                className="text-xs text-red-500 hover:underline"
+              >
+                Clear All
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -86,14 +90,14 @@ export default function ItemGroup({ group }) {
           />
         ))}
 
-      {/* Bottom Clear All inside expanded group */}
-      {isOpen && showSelectedCount && (
+      {/* Bottom Clear All (expanded state, only if more than 1 selected) */}
+      {isOpen && showClearAll && (
         <div className="pt-2 text-right">
           <button
             onClick={handleClear}
             className="text-xs text-red-500 hover:underline"
           >
-            Clear all
+            Clear All
           </button>
         </div>
       )}
