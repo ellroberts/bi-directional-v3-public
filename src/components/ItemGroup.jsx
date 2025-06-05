@@ -44,10 +44,14 @@ export default function ItemGroup({ group }) {
             <div className="text-sm text-gray-500">
               {group.options.length} options available
             </div>
+            {!isOpen && selectedOptionCount > 0 && (
+              <div className="text-xs text-gray-400">
+                {selectedOptionCount} option{selectedOptionCount > 1 ? "s" : ""} selected
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Top-right "X selected" and Clear All (only if more than 1 selected) */}
         {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center gap-3 text-sm text-gray-600 whitespace-nowrap">
             <span>{totalQuantity} selected</span>
@@ -90,7 +94,7 @@ export default function ItemGroup({ group }) {
           />
         ))}
 
-      {/* Bottom Clear All (expanded state, only if more than 1 selected) */}
+      {/* Bottom Clear All (expanded view) */}
       {isOpen && showClearAll && (
         <div className="pt-2 text-right">
           <button
