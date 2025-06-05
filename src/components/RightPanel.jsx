@@ -13,7 +13,13 @@ export default function RightPanel() {
     premium: "MS365 Business Premium",
   };
 
-  const [expandedGroups, setExpandedGroups] = useState({});
+  const [expandedGroups, setExpandedGroups] = useState(() => {
+    const initialState = {};
+    Object.keys(groupLabels).forEach((id) => {
+      initialState[id] = false; // collapsed by default
+    });
+    return initialState;
+  });
 
   const toggleGroup = (groupId) => {
     setExpandedGroups((prev) => ({
@@ -21,6 +27,16 @@ export default function RightPanel() {
       [groupId]: !prev[groupId],
     }));
   };
+
+  // Calculate total
+  const total = Object.entries(selected).reduce((sum, [groupId, options]) => {
+    return (
+      sum +
+      Object.values(options).reduce((groupSum, opt) => {
+        return groupSum + (opt.qty || 0) * (opt.price || 0);
+      }, 0)
+    );
+  }, 0);
 
   return (
     <div className="p-4">
@@ -30,12 +46,12 @@ export default function RightPanel() {
         const options = selected[groupId];
         if (!options || Object.keys(options).length === 0) return null;
 
-        const isExpanded = expandedGroups[groupId] ?? true;
+        const isExpanded = expandedGroups[groupId];
         const optionCount = Object.keys(options).length;
 
         return (
           <div key={groupId} className="mb-2">
-            {/* Header: match left column */}
+            {/* Header */}
             <div
               className="flex items-start justify-between cursor-pointer"
               onClick={() => toggleGroup(groupId)}
@@ -59,7 +75,7 @@ export default function RightPanel() {
 
             {/* Rows */}
             {isExpanded && (
-              <div className="pt-2 space-y-6">
+              <div className="pt-2 space-y-4">
                 {Object.entries(options).map(([optionId, opt]) => (
                   <RightPanelRow
                     key={`${groupId}-${optionId}`}
@@ -80,6 +96,12 @@ export default function RightPanel() {
           </div>
         );
       })}
+
+      {/* Total Section */}
+      <div className="mt-6 pt-4 border-t border-gray-300 text-right">
+        <div className="text-sm font-semibold text-gray-700">Total:</div>
+        <div className="text-xl font-bold text-black">£{total.toFixed(2)}</div>
+      </div>
     </div>
   );
 }
