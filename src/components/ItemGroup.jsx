@@ -70,29 +70,29 @@ export default function ItemGroup({ group }) {
         )}
       </div>
 
-      {/* Table header */}
+      {/* Bordered container wrapping header + rows */}
       {isOpen && group.options.length > 0 && (
-        <div className="grid grid-cols-[60px_120px_120px_1fr_80px_80px] gap-4 text-sm font-semibold text-gray-700 border-b py-2 mt-3">
-          <div>Option</div>
-          <div>Term</div>
-          <div>Billing</div>
-          <div>Licence</div>
-          <div className="text-right">Price</div>
-          <div></div>
+        <div className="border border-gray-300 rounded-md overflow-hidden mt-3">
+          <div className="grid grid-cols-6 lg:grid-cols-[40px_110px_90px_1fr_70px_70px] gap-2 px-4 gap-2 px-4 text-sm font-semibold text-gray-700 bg-gray-50 border-b py-2 px-4">
+            <div>Option</div>
+            <div>Term</div>
+            <div>Billing</div>
+            <div>Licence</div>
+            <div className="text-left">Price</div>
+            <div></div>
+          </div>
+
+          {group.options.map((option, index) => (
+            <AddonTableRow
+              key={option.id}
+              option={option}
+              groupId={groupId}
+              index={index}
+              isLast={index === group.options.length - 1}
+            />
+          ))}
         </div>
       )}
-
-      {/* Option rows */}
-      {isOpen &&
-        group.options.map((option, index) => (
-          <AddonTableRow
-            key={option.id}
-            option={option}
-            groupId={groupId}
-            index={index}
-            isLast={index === group.options.length - 1}
-          />
-        ))}
 
       {/* Bottom Clear All (expanded view) */}
       {isOpen && showClearAll && (
