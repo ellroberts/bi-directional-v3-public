@@ -20,14 +20,13 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   const isValid = isQtyNumber && parsedQty >= minQty;
   const hasChanged = isQtyNumber && parsedQty !== committedQty;
 
-  const handleSave = (overrideOption = null) => {
-    const newQty = parsedQty === 0 ? 1 : parsedQty;
+  const handleSave = () => {
+    const newQty = parsedQty === 0 && !current ? 1 : parsedQty;
     if (isQtyNumber && newQty >= minQty) {
-      const opt = overrideOption || {
+      addOrUpdate(groupId, option.id, {
         ...option,
         qty: newQty,
-      };
-      addOrUpdate(groupId, option.id, opt);
+      });
     }
   };
 
@@ -107,12 +106,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 ? "border-[#A34796] text-[#A34796]"
                 : "border border-gray-300 text-gray-400"
             }`}
-            onClick={() =>
-              handleSave({
-                ...option,
-                qty: parsedQty === 0 ? 1 : parsedQty,
-              })
-            }
+            onClick={handleSave}
           >
             Add
           </button>
