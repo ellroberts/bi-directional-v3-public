@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
 import { usePlan } from "./PlanContext";
 import RightPanelRow from "./RightPanelRow";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 
 export default function RightPanel() {
-  const { selected } = usePlan();
+  const { selected, remove } = usePlan();
 
   const groupLabels = {
     ms365: "MS365 Business Basic",
@@ -26,6 +25,14 @@ export default function RightPanel() {
       ...prev,
       [groupId]: !prev[groupId],
     }));
+  };
+
+  const handleClearGroup = (groupId) => {
+    const options = selected[groupId];
+    if (!options) return;
+    Object.keys(options).forEach((optionId) => {
+      remove(groupId, optionId);
+    });
   };
 
   // Calculate total
@@ -84,6 +91,18 @@ export default function RightPanel() {
                     opt={opt}
                   />
                 ))}
+
+                {/* Clear All button inside expanded view */}
+                {optionCount > 1 && (
+                  <div className="text-right pt-1">
+                    <button
+                      onClick={() => handleClearGroup(groupId)}
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
