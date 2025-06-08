@@ -6,7 +6,7 @@ import { DebugProvider, useDebug } from "./components/DebugContext.jsx";
 import DebugToggle from "./components/DebugToggle";
 import Pagination from "./components/Pagination";
 import { FaSearch } from "react-icons/fa";
-import TypeMultiSelect from "./components/TypeMultiSelect";
+import SegmentSelect from "./components/SegmentSelect";
 import { Input } from "./components/ui/input";
 import ViewSelect from "./components/ui/ViewSelect";
 
@@ -61,12 +61,12 @@ function AppContent() {
 
               {/* Type + Search */}
               <div className="flex items-end gap-4">
-                {/* Type Dropdown */}
+                {/* Customer Segment Dropdown */}
                 <div>
-                  <div className="text-sm font-medium mb-1">Type</div>
-                  <div className="h-10">
-                    <TypeMultiSelect />
-                  </div>
+                <div className="text-sm font-medium mb-1">Customer Segment</div>
+                <div className="h-10">
+                <SegmentSelect />
+                </div>
                 </div>
 
                 {/* Search Field */}
