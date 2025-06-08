@@ -35,7 +35,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   };
 
   return (
-    <div className="grid grid-cols-6 lg:grid-cols-[40px_110px_90px_1fr_70px_70px] gap-2 px-4 items-center text-sm py-3">
+    <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_70px] gap-2 px-4 items-center text-sm py-3">
       <div>{index + 1}</div>
       <div>{option.term}</div>
       <div>{option.billing}</div>
