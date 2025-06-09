@@ -15,7 +15,7 @@ export default function RightPanel() {
   const [expandedGroups, setExpandedGroups] = useState(() => {
     const initialState = {};
     Object.keys(groupLabels).forEach((id) => {
-      initialState[id] = false; // collapsed by default
+      initialState[id] = false;
     });
     return initialState;
   });
@@ -35,7 +35,6 @@ export default function RightPanel() {
     });
   };
 
-  // Calculate total
   const total = Object.entries(selected).reduce((sum, [groupId, options]) => {
     return (
       sum +
@@ -55,10 +54,13 @@ export default function RightPanel() {
 
         const isExpanded = expandedGroups[groupId];
         const optionCount = Object.keys(options).length;
+        const totalQty = Object.values(options).reduce(
+          (sum, opt) => sum + (parseInt(opt.qty, 10) || 0),
+          0
+        );
 
         return (
           <div key={groupId} className="mb-6">
-            {/* Header */}
             <div
               className="flex items-start justify-between cursor-pointer"
               onClick={() => toggleGroup(groupId)}
@@ -72,15 +74,19 @@ export default function RightPanel() {
                 <div className="flex flex-col">
                   <div className="font-semibold truncate">{label}</div>
                   {!isExpanded && (
-                    <div className="text-sm text-gray-500">
-                      {optionCount} option{optionCount > 1 ? "s" : ""} selected
+                    <div className="text-sm text-gray-500 space-y-0.5">
+                      <div>
+                        {optionCount} option{optionCount > 1 ? "s" : ""} selected
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {totalQty} licence{totalQty !== 1 ? "s" : ""} selected
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Rows */}
             {isExpanded && (
               <div className="pt-2 space-y-4">
                 {Object.entries(options).map(([optionId, opt]) => (
@@ -92,7 +98,6 @@ export default function RightPanel() {
                   />
                 ))}
 
-                {/* Clear All button inside expanded view */}
                 {optionCount > 1 && (
                   <div className="text-right pt-1">
                     <button
@@ -109,7 +114,6 @@ export default function RightPanel() {
         );
       })}
 
-      {/* Total Section */}
       <div className="mt-6 pt-4 border-t border-gray-300 text-right">
         <div className="text-sm font-semibold text-gray-700">Total:</div>
         <div className="text-xl font-bold text-black">£{total.toFixed(2)}</div>
