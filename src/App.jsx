@@ -57,7 +57,7 @@ function AppContent() {
                   {/* Segment + Search */}
                   <div className="flex items-end gap-4">
                     <div>
-                      <div className="text-sm font-medium mb-1">Customer Segment</div>
+                      <div className="text-sm font-medium mb-1">Customer segment</div>
                       <div className="h-10">
                         <SegmentSelect />
                       </div>
