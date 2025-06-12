@@ -46,7 +46,7 @@ export default function ItemGroup({ group, togglePin }) {
           </div>
         </div>
 
-        {/* Show total selected count as a badge */}
+        {/* Badge showing total selection */}
         {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center text-sm whitespace-nowrap">
             <span className="inline-block px-3 py-[3px] rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
@@ -59,6 +59,7 @@ export default function ItemGroup({ group, togglePin }) {
       {/* Expanded table view */}
       {isOpen && group.options.length > 0 && (
         <div className="border border-gray-300 rounded-md overflow-hidden mt-3">
+          {/* Header Row */}
           <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_70px] gap-2 px-4 text-sm font-semibold text-gray-700 bg-gray-50 border-b py-2">
             <div>Option</div>
             <div>Term</div>
@@ -68,6 +69,7 @@ export default function ItemGroup({ group, togglePin }) {
             <div></div>
           </div>
 
+          {/* Table Rows */}
           {group.options.map((option, index) => (
             <AddonTableRow
               key={option.id}
@@ -75,21 +77,21 @@ export default function ItemGroup({ group, togglePin }) {
               groupId={groupId}
               index={index}
               isLast={index === group.options.length - 1}
-              togglePin={togglePin} // ✅ Pass the pin toggle function
+              togglePin={togglePin}
             />
           ))}
-        </div>
-      )}
 
-      {/* Clear All visible only when expanded */}
-      {isOpen && showClearAll && (
-        <div className="pt-2 text-right">
-          <button
-            onClick={handleClear}
-            className="text-xs text-red-500 hover:underline"
-          >
-            Clear All
-          </button>
+          {/* Clear All button inside the border box */}
+          {showClearAll && (
+            <div className="px-4 py-3 border-t bg-white text-right">
+              <button
+                onClick={handleClear}
+                className="text-xs text-red-500 hover:underline"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
