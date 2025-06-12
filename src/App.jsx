@@ -36,20 +36,21 @@ function AppContent() {
   setSelectedOnly={setSelectedOnly}
 />
 
+             {/* Plan content */}
+             <LeftPanel view={view} setView={setView} selectedOnly={selectedOnly} />
 
-              {/* Plan content */}
-              <LeftPanel view={view} selectedOnly={selectedOnly} />
+{view !== "popular" &&
+  [1, 2, 3, 4, 5].map((i) => (
+    <ItemGroup
+      key={`placeholder-${i}`}
+      group={{
+        id: `placeholder-${i}`,
+        name: "Something else",
+        options: [],
+      }}
+    />
+  ))}
 
-              {[1, 2, 3, 4, 5].map((i) => (
-                <ItemGroup
-                  key={`placeholder-${i}`}
-                  group={{
-                    id: `placeholder-${i}`,
-                    name: "Something else",
-                    options: [],
-                  }}
-                />
-              ))}
             </div>
 
             {/* Pagination only in left column */}

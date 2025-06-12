@@ -4,7 +4,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { FaChevronDown } from "react-icons/fa";
 
 const VIEW_OPTIONS = [
-  { label: "Popular (500)", value: "popular" },
+  { label: "Popular (0)", value: "popular" },
   { label: "All (1000)", value: "all" },
 ];
 
