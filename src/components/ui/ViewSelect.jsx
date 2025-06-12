@@ -9,9 +9,19 @@ const VIEW_OPTIONS = [
 ];
 
 export default function ViewSelect({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = (selectedValue) => {
+    onChange(selectedValue);
+    setOpen(false); // 👈 closes the popover after selecting
+  };
+
   return (
-    <Popover.Root>
-      <Popover.Trigger className="flex h-10 w-[160px] items-center justify-between rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black">
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger
+        className="flex h-10 w-[160px] items-center justify-between rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+        aria-haspopup="listbox"
+      >
         <span>
           {VIEW_OPTIONS.find((opt) => opt.value === value)?.label || "Select"}
         </span>
@@ -25,7 +35,7 @@ export default function ViewSelect({ value, onChange }) {
         {VIEW_OPTIONS.map((option) => (
           <button
             key={option.value}
-            onClick={() => onChange(option.value)}
+            onClick={() => handleSelect(option.value)}
             className={`block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 ${
               value === option.value ? "font-bold text-black" : "text-gray-700"
             }`}
