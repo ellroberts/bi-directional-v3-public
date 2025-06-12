@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { usePlan } from "./PlanContext";
-import { FaTrash, FaRegBookmark, FaBookmark } from "react-icons/fa";
-import { FaBookmark, FaRegBookmark, FaPlus } from "react-icons/fa";
-
+import {
+  FaBookmark,
+  FaRegBookmark,
+  FaPlus,
+  FaCheck,
+  FaSyncAlt,
+} from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast, togglePin }) {
   const { selected, addOrUpdate, remove } = usePlan();
@@ -37,18 +41,8 @@ export default function AddonTableRow({ option, index, groupId, isLast, togglePi
   };
 
   return (
-    <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_70px] gap-2 px-4 items-center text-sm py-3">
-      <div className="flex items-center gap-2">
-        <span>{index + 1}</span>
-        <button
-          onClick={() => togglePin(groupId, option.id)}
-          title={option.isPinned ? "Unpin" : "Pin"}
-          className="text-[#A34796] hover:text-black"
-        >
-          {option.isPinned ? <FaBookmark /> : <FaRegBookmark />}
-        </button>
-      </div>
-
+    <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_80px] gap-2 px-4 items-center text-sm py-3">
+      <div>{index + 1}</div>
       <div>{option.term}</div>
       <div>{option.billing}</div>
 
@@ -107,39 +101,46 @@ export default function AddonTableRow({ option, index, groupId, isLast, togglePi
 
       <div className="text-left">£{option.price}</div>
 
-      <div>
-        {current && hasChanged ? (
-          <button
-            className="w-full h-[32px] text-sm text-white px-2 rounded-md"
-            style={{ backgroundColor: "#A34796" }}
-            onClick={handleSave}
-            disabled={!isValid}
-          >
-            Update
-          </button>
-        ) : current ? (
-          <button
-            className="w-full h-[32px] flex items-center justify-center text-sm px-2 rounded-md border border-gray-300 bg-white"
-            onClick={handleRemove}
-            title="Remove"
-          >
-            <FaTrash className="text-red-500 text-[14px]" />
-          </button>
-        ) : (
-          <button
-            className={`w-full h-[32px] text-sm px-2 rounded-md bg-white hover:bg-[#fdf0fa] border-2 ${
-              parsedQty === 0
-                ? "border-[#A34796] text-[#A34796]"
-                : isValid
-                ? "border-[#A34796] text-[#A34796]"
-                : "border border-gray-300 text-gray-400"
-            }`}
-            onClick={handleSave}
-          >
-            Add
-          </button>
-        )}
-      </div>
+      <div className="flex gap-2 justify-end">
+  {/* Add / Tick / Update */}
+  <button
+    onClick={current ? (hasChanged ? handleSave : handleRemove) : handleSave}
+    disabled={!isValid && !current}
+    className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border-2 transition
+      ${
+        current
+          ? hasChanged
+            ? "bg-[#A34796] text-white border-transparent" // updated
+            : "bg-[#100135] text-white border-transparent" // confirmed
+          : isValid
+          ? "bg-white text-[#A34796] border-[#A34796] hover:bg-[#fdf0fa]"
+          : "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+      }`}
+    title={
+      current ? (hasChanged ? "Update quantity" : "Remove") : "Add"
+    }
+  >
+    {current
+      ? hasChanged
+        ? <FaSyncAlt />
+        : <FaCheck />
+      : <FaPlus />}
+  </button>
+
+  {/* Pin Button */}
+  <button
+    onClick={() => togglePin(groupId, option.id)}
+    className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border-2 transition
+      ${
+        option.isPinned
+          ? "bg-[#100135] text-white border-transparent"
+          : "bg-white text-[#A34796] border-[#A34796] hover:bg-[#fdf0fa]"
+      }`}
+    title={option.isPinned ? "Unpin" : "Pin"}
+  >
+    {option.isPinned ? <FaBookmark /> : <FaRegBookmark />}
+  </button>
+</div>
     </div>
   );
 }
