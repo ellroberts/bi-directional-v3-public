@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { usePlan } from "./PlanContext";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaRegBookmark, FaBookmark } from "react-icons/fa";
 
-export default function AddonTableRow({ option, index, groupId, isLast }) {
+export default function AddonTableRow({ option, index, groupId, isLast, togglePin }) {
   const { selected, addOrUpdate, remove } = usePlan();
 
   const current = selected[groupId]?.[option.id];
@@ -36,7 +36,17 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
   return (
     <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_70px] gap-2 px-4 items-center text-sm py-3">
-      <div>{index + 1}</div>
+      <div className="flex items-center gap-2">
+        <span>{index + 1}</span>
+        <button
+          onClick={() => togglePin(groupId, option.id)}
+          title={option.isPinned ? "Unpin" : "Pin"}
+          className="text-[#A34796] hover:text-black"
+        >
+          {option.isPinned ? <FaBookmark /> : <FaRegBookmark />}
+        </button>
+      </div>
+
       <div>{option.term}</div>
       <div>{option.billing}</div>
 
@@ -64,32 +74,33 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
 
-<button
-  disabled={
-    !isQtyNumber ||
-    (typeof option.max === "number" && parsedQty >= option.max)
-  }
-  onClick={() => {
-    if (!isQtyNumber) return;
-    if (typeof option.max === "number" && parsedQty >= option.max) return;
-    setInputQty(parsedQty + 1);
-  }}
-  className={`px-2 text-sm h-full bg-white ${
-    !isQtyNumber || (typeof option.max === "number" && parsedQty >= option.max)
-      ? "text-gray-300 cursor-not-allowed"
-      : "text-black"
-  }`}
->
-  +
-</button>
+          <button
+            disabled={
+              !isQtyNumber ||
+              (typeof option.max === "number" && parsedQty >= option.max)
+            }
+            onClick={() => {
+              if (!isQtyNumber) return;
+              if (typeof option.max === "number" && parsedQty >= option.max) return;
+              setInputQty(parsedQty + 1);
+            }}
+            className={`px-2 text-sm h-full bg-white ${
+              !isQtyNumber ||
+              (typeof option.max === "number" && parsedQty >= option.max)
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-black"
+            }`}
+          >
+            +
+          </button>
         </div>
 
         {(option.min > 0 || option.max > 0) && (
-  <div className="text-xs text-gray-500 leading-tight whitespace-nowrap">
-    {option.min > 0 && <div>Min {option.min}</div>}
-    {option.max > 0 && <div>Max {option.max}</div>}
-  </div>
-)}
+          <div className="text-xs text-gray-500 leading-tight whitespace-nowrap">
+            {option.min > 0 && <div>Min {option.min}</div>}
+            {option.max > 0 && <div>Max {option.max}</div>}
+          </div>
+        )}
       </div>
 
       <div className="text-left">£{option.price}</div>

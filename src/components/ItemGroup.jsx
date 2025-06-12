@@ -3,7 +3,7 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
 import { usePlan } from "./PlanContext";
 
-export default function ItemGroup({ group }) {
+export default function ItemGroup({ group, togglePin }) {
   const [isOpen, setIsOpen] = useState(false);
   const { selected, remove } = usePlan();
 
@@ -50,7 +50,7 @@ export default function ItemGroup({ group }) {
         {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center text-sm whitespace-nowrap">
             <span className="inline-block px-3 py-[3px] rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
-            {totalQuantity} Licence{totalQuantity !== 1 ? "s" : ""} selected
+              {totalQuantity} Licence{totalQuantity !== 1 ? "s" : ""} selected
             </span>
           </div>
         )}
@@ -75,6 +75,7 @@ export default function ItemGroup({ group }) {
               groupId={groupId}
               index={index}
               isLast={index === group.options.length - 1}
+              togglePin={togglePin} // ✅ Pass the pin toggle function
             />
           ))}
         </div>
