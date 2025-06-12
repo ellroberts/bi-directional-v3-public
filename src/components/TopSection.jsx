@@ -3,7 +3,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import SegmentSelect from "./SegmentSelect";
 import ViewSelect from "./ui/ViewSelect"; // adjust path if needed
 
-export default function TopSection({ view, setView, selectedOnly, setSelectedOnly }) {
+export default function TopSection({ view, setView, selectedOnly, setSelectedOnly, pinnedCount }) {
   const [search, setSearch] = useState("");
 
   return (
@@ -14,7 +14,7 @@ export default function TopSection({ view, setView, selectedOnly, setSelectedOnl
         <div>
           <div className="text-sm font-medium mb-1">View</div>
           <div className="h-10 flex items-center gap-3">
-            <ViewSelect value={view} onChange={setView} />
+          <ViewSelect value={view} onChange={setView} pinnedCount={pinnedCount} />
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

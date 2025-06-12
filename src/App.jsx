@@ -16,6 +16,70 @@ function AppContent() {
   const [view, setView] = useState("popular");
   const [selectedOnly, setSelectedOnly] = useState(false);
 
+  const [services, setServices] = useState([
+    {
+      name: "MS365 Business Basic",
+      id: "ms365",
+      options: [
+        { id: "1", term: "Monthly", billing: "Monthly", price: 7, min: 10, isPinned: false },
+        { id: "2", term: "Monthly", billing: "Annual", price: 7, min: 0, isPinned: false },
+        { id: "3", term: "Annual", billing: "Annual", price: 7, min: 0, isPinned: false },
+      ],
+    },
+    {
+      name: "MS365 Business Standard",
+      id: "standard",
+      options: [
+        { id: "standard-1", term: "Monthly", billing: "Monthly", price: 7, min: 10, max: 50, isPinned: false },
+        { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0, isPinned: false },
+        { id: "standard-3", term: "Annual", billing: "Monthly", price: 7, min: 0, isPinned: false },
+        { id: "standard-4", term: "Annual", billing: "Annual", price: 7, min: 0, isPinned: false },
+      ],
+    },
+    {
+      name: "MS365 Business Premium",
+      id: "premium",
+      options: [
+        { id: "premium-1", term: "Monthly", billing: "Monthly", price: 7, min: 0, isPinned: false },
+        { id: "premium-2", term: "Monthly", billing: "Annual", price: 7, min: 0, isPinned: false },
+        { id: "premium-3", term: "Annual", billing: "Monthly", price: 7, min: 0, isPinned: false },
+        { id: "premium-4", term: "Annual", billing: "Annual", price: 7, min: 0, isPinned: false },
+      ],
+    },
+    {
+      name: "Something else",
+      id: "other-1",
+      options: [],
+    },
+    {
+      name: "Something else",
+      id: "other-2",
+      options: [],
+    },
+  ]);
+
+  // ✅ Add togglePin to update pin status in App state
+  const togglePin = (groupId, optionId) => {
+    setServices((prev) =>
+      prev.map((group) =>
+        group.id === groupId
+          ? {
+              ...group,
+              options: group.options.map((opt) =>
+                opt.id === optionId
+                  ? { ...opt, isPinned: !opt.isPinned }
+                  : opt
+              ),
+            }
+          : group
+      )
+    );
+  };
+
+  const pinnedCount = services.reduce((count, group) => {
+    return count + group.options.filter((opt) => opt.isPinned).length;
+  }, 0);
+
   return (
     <div className={`${isRedline ? "debug-all" : ""} min-h-screen bg-gray-50`}>
       <div className="max-w-[1200px] mx-auto px-4 py-6 flex flex-col space-y-4 min-h-screen">
@@ -26,34 +90,37 @@ function AppContent() {
         <div className="flex flex-col md:flex-row gap-6 flex-grow">
           {/* Left Column */}
           <div className="w-full md:w-2/3 flex flex-col space-y-4">
-            {/* Left Column Panel */}
             <div className="bg-white p-4 rounded shadow flex-grow space-y-6">
-              {/* Filters + Search Section */}
               <TopSection
-  view={view}
-  setView={setView}
-  selectedOnly={selectedOnly}
-  setSelectedOnly={setSelectedOnly}
-/>
+                view={view}
+                setView={setView}
+                selectedOnly={selectedOnly}
+                setSelectedOnly={setSelectedOnly}
+                pinnedCount={pinnedCount}
+              />
 
-             {/* Plan content */}
-             <LeftPanel view={view} setView={setView} selectedOnly={selectedOnly} />
+              <LeftPanel
+                view={view}
+                setView={setView}
+                selectedOnly={selectedOnly}
+                services={services}
+                setServices={setServices}
+                togglePin={togglePin}
+              />
 
-{view !== "popular" &&
-  [1, 2, 3, 4, 5].map((i) => (
-    <ItemGroup
-      key={`placeholder-${i}`}
-      group={{
-        id: `placeholder-${i}`,
-        name: "Something else",
-        options: [],
-      }}
-    />
-  ))}
-
+              {view !== "popular" &&
+                [1, 2, 3, 4, 5].map((i) => (
+                  <ItemGroup
+                    key={`placeholder-${i}`}
+                    group={{
+                      id: `placeholder-${i}`,
+                      name: "Something else",
+                      options: [],
+                    }}
+                  />
+                ))}
             </div>
 
-            {/* Pagination only in left column */}
             <div className="pt-4 border-t">
               <Pagination
                 currentPage={page}
@@ -63,7 +130,6 @@ function AppContent() {
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="w-full md:w-1/3 bg-gray-100 p-4 rounded">
             <RightPanel />
           </div>

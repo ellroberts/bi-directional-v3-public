@@ -3,18 +3,19 @@ import React, { useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { FaChevronDown } from "react-icons/fa";
 
-const VIEW_OPTIONS = [
-  { label: "Popular (0)", value: "popular" },
-  { label: "All (1000)", value: "all" },
-];
-
-export default function ViewSelect({ value, onChange }) {
+export default function ViewSelect({ value, onChange, pinnedCount }) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (selectedValue) => {
     onChange(selectedValue);
-    setOpen(false); // 👈 closes the popover after selecting
+    setOpen(false);
   };
+
+  // ✅ Dynamically label the views
+  const VIEW_OPTIONS = [
+    { label: `Pinned (${pinnedCount})`, value: "popular" },
+    { label: "All (1000)", value: "all" },
+  ];
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>

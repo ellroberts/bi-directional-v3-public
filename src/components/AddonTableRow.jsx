@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { usePlan } from "./PlanContext";
 import { FaTrash, FaRegBookmark, FaBookmark } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaPlus } from "react-icons/fa";
+
 
 export default function AddonTableRow({ option, index, groupId, isLast, togglePin }) {
   const { selected, addOrUpdate, remove } = usePlan();
