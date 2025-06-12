@@ -64,17 +64,32 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
 
-          <button
-            onClick={() => isQtyNumber && setInputQty(parsedQty + 1)}
-            className="px-2 text-sm text-black h-full bg-white"
-          >
-            +
-          </button>
+<button
+  disabled={
+    !isQtyNumber ||
+    (typeof option.max === "number" && parsedQty >= option.max)
+  }
+  onClick={() => {
+    if (!isQtyNumber) return;
+    if (typeof option.max === "number" && parsedQty >= option.max) return;
+    setInputQty(parsedQty + 1);
+  }}
+  className={`px-2 text-sm h-full bg-white ${
+    !isQtyNumber || (typeof option.max === "number" && parsedQty >= option.max)
+      ? "text-gray-300 cursor-not-allowed"
+      : "text-black"
+  }`}
+>
+  +
+</button>
         </div>
 
-        {option.min ? (
-          <div className="text-xs text-gray-500 whitespace-nowrap">Min {option.min}</div>
-        ) : null}
+        {(option.min > 0 || option.max > 0) && (
+  <div className="text-xs text-gray-500 leading-tight whitespace-nowrap">
+    {option.min > 0 && <div>Min {option.min}</div>}
+    {option.max > 0 && <div>Max {option.max}</div>}
+  </div>
+)}
       </div>
 
       <div className="text-left">£{option.price}</div>

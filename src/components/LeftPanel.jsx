@@ -17,8 +17,8 @@ const data = [
     name: "MS365 Business Standard",
     id: "standard",
     options: [
-      { id: "standard-1", term: "Monthly", billing: "Monthly", price: 7, min: 0 },
-      { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
+      { id: "standard-1", term: "Monthly", billing: "Monthly", price: 7, min: 10, max: 50, },
+      { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0, },
       { id: "standard-3", term: "Annual", billing: "Monthly", price: 7, min: 0 },
       { id: "standard-4", term: "Annual", billing: "Annual", price: 7, min: 0 },
     ],
