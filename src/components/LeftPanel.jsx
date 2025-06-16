@@ -48,22 +48,34 @@ export default function LeftPanel({ view, setView, selectedOnly }) {
   if (view === "popular") {
     return (
       <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
-        {/* Grey circular placeholder */}
-        <div className="w-16 h-16 rounded-full bg-gray-200 mb-6" />
+  {/* Grey circular placeholder */}
+  <div className="w-16 h-16 rounded-full bg-gray-200 mb-6" />
 
-        {/* Heading */}
-        <div className="text-lg font-semibold text-black mb-2">
-          We’re sorry there are no popular services available.
-        </div>
-
-        {/* Action link */}
-        <button
-          onClick={() => setView("all")}
-          className="text-[#A34796] text-sm font-medium hover:underline"
-        >
-          Show all services
-        </button>
-      </div>
+  <div className="text-lg font-semibold text-black space-y-6">
+  <div className="max-w-md mx-auto">
+  <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
+  No Popular Products Yet.
+</h3>
+    <p className="text-base font-normal text-center mb-6">Your team hasn’t marked any products as popular. </p>
+<p className="text-base font-normal text-center mb-6">If you're an administrator, go to{" "}
+  <a
+    href="/supply-product-mapping"
+    className="text-[#A34796] hover:underline font-medium"
+  >
+    Supply Product Mapping
+  </a> to add your most ordered products.</p>
+<p className="text-base font-normal text-center mb-6">
+  Otherwise, explore{" "}
+  <button
+    onClick={() => setView("all")}
+    className="text-[#A34796] hover:underline font-medium"
+  >
+    all services
+  </button>
+</p>
+  </div>
+</div>
+</div>
     );
   }
 
