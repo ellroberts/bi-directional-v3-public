@@ -12,8 +12,20 @@ export default function ViewSelect({ value, onChange }) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (selectedValue) => {
+    // Call the existing onChange handler
     onChange(selectedValue);
-    setOpen(false); // 👈 closes the popover after selecting
+    
+    // NEW: Update URL for comment system detection
+    try {
+      const url = new URL(window.location);
+      url.searchParams.set('view', selectedValue);
+      window.history.pushState({}, '', url);
+      console.log('View changed to:', selectedValue, 'URL updated to:', url.toString());
+    } catch (error) {
+      console.log('Could not update URL:', error);
+    }
+    
+    setOpen(false); // closes the popover after selecting
   };
 
   return (
