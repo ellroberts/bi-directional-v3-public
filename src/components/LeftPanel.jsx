@@ -65,7 +65,7 @@ export default function LeftPanel({ view, setView, selectedOnly }) {
               <a href="/supply-product-mapping" className="text-[#A34796] hover:underline font-medium">
                 Supply Product Mapping
               </a>{" "}
-              to add your most ordered products.
+              to add the products your team orders most.
             </p>
             <p className="text-base font-normal text-center mb-6">
               Otherwise, explore{" "}

@@ -168,7 +168,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
       {/* Price column */}
       <div className="text-left">
-        {option.billing === "Free" ? "/" : `£${option.price}`}
+        {option.billing === "Free" ? "£0" : `£${option.price}`}
       </div>
 
       {/* Buttons container */}
