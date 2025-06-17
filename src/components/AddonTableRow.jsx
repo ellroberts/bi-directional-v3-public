@@ -5,6 +5,12 @@ import { FaTrash, FaCheck, FaPlus } from "react-icons/fa";
 export default function AddonTableRow({ option, index, groupId, isLast }) {
   const { selected, addOrUpdate, remove } = usePlan();
 
+  // Add safety checks for option prop
+  if (!option) {
+    console.error('AddonTableRow: option prop is undefined');
+    return null;
+  }
+
   const current = selected[groupId]?.[option.id];
   const minQty = option.min || 0;
   const committedQty = current?.qty ?? null;
@@ -40,11 +46,16 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
     remove(groupId, option.id);
   };
 
+  // Determine background color based on selection and billing type
+  const getBackgroundColor = () => {
+    if (!isSelected) return "bg-white";
+    if (option.billing === "Free") return "bg-green-50";
+    return "bg-[#F3F2F5]";
+  };
+
   return (
     <div
-      className={`grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_72px] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${
-        isSelected ? "bg-[#F3F2F5]" : "bg-white"
-      }`}
+      className={`grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_72px] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${getBackgroundColor()}`}
     >
       <div className="pl-4">{index + 1}</div>
       <div className="pl-2">{option.term}</div>
@@ -62,7 +73,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
       {/* Licence control */}
       <div className="flex items-center gap-2">
-        <div className="flex items-center rounded-md border-2 border-gray-300 overflow-hidden text-sm h-[32px]">
+        <div className="flex items-center gap-3 p-1 rounded-lg border-2 border-gray-300 bg-white">
           {/* Minus button */}
           <button
             disabled={!isQtyNumber || parsedQty <= minQty}
@@ -81,10 +92,10 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 remove(groupId, option.id);
               }
             }}
-            className={`px-2 text-sm h-full ${
+            className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium ${
               !isQtyNumber || parsedQty <= minQty
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-white text-[#222222] hover:bg-gray-50"
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-gray-500 hover:bg-gray-600"
             }`}
           >
             −
@@ -96,12 +107,26 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             inputMode="numeric"
             value={inputQty}
             onChange={(e) => setInputQty(e.target.value)}
-            className={`h-full w-[52px] text-center border-x border-gray-300 text-sm font-medium focus:outline-none
-              [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-              isInputDisabled
-                ? "bg-gray-100 text-gray-400"
-                : "bg-white text-[#222222]"
-            }`}
+            onBlur={() => {
+              // Auto-save when user finishes typing (loses focus)
+              if (isQtyNumber && parsedQty >= minQty) {
+                addOrUpdate(groupId, option.id, {
+                  ...option,
+                  qty: parsedQty,
+                });
+              } else if (parsedQty < minQty && current) {
+                // Remove if below minimum
+                remove(groupId, option.id);
+              }
+            }}
+            onKeyDown={(e) => {
+              // Auto-save when user presses Enter
+              if (e.key === 'Enter') {
+                e.target.blur(); // This will trigger onBlur
+              }
+            }}
+            className="w-8 text-center text-sm font-bold text-gray-800 bg-transparent border-none focus:outline-none
+              [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
 
           {/* Plus button */}
@@ -123,10 +148,10 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 });
               }
             }}
-            className={`px-2 text-sm h-full ${
+            className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium ${
               !isQtyNumber || (typeof option.max === "number" && parsedQty >= option.max)
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-white text-[#222222] hover:bg-gray-50"
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-gray-500 hover:bg-gray-600"
             }`}
           >
             +
@@ -147,11 +172,11 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
       </div>
 
       {/* Buttons container */}
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2 pr-2">
         {/* Add/Update button */}
         {current && hasChanged ? (
           <button
-            className="w-[32px] h-[32px] flex items-center justify-center text-white rounded-md"
+            className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px]"
             style={{ backgroundColor: "#A34796" }}
             onClick={handleSave}
             disabled={!isValid}
@@ -160,7 +185,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           </button>
         ) : current ? (
           <button
-            className="w-[32px] h-[32px] flex items-center justify-center text-white rounded-md"
+            className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px]"
             style={{ backgroundColor: "#A34796" }}
             onClick={handleRemove}
           >
@@ -168,7 +193,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           </button>
         ) : (
           <button
-            className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border-2 ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-md border-2 min-w-[50px] h-[32px] flex items-center justify-center ${
               isValid
                 ? "border-[#A34796] text-[#A34796] hover:bg-[#fdf0fa]"
                 : "border-gray-300 text-gray-400"
@@ -176,13 +201,13 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             onClick={handleSave}
             disabled={!isValid}
           >
-            <FaPlus className="text-sm" />
+            Add
           </button>
         )}
 
         {/* Remove button */}
         <button
-          className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border bg-white ${
+          className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border bg-white flex-shrink-0 ${
             isSelected
               ? "border-gray-300 text-[#383838] hover:bg-gray-50"
               : "border-gray-200 text-gray-300 cursor-not-allowed"

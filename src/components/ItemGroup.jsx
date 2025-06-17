@@ -3,8 +3,8 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
 import { usePlan } from "./PlanContext";
 
-export default function ItemGroup({ group }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ItemGroup({ group, index }) {
+  const [isOpen, setIsOpen] = useState(index === 0);
   const { selected, remove } = usePlan();
 
   const handleToggle = () => setIsOpen((prev) => !prev);
