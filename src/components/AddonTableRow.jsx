@@ -176,12 +176,12 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
         {/* Add/Update button */}
         {current && hasChanged ? (
           <button
-            className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px]"
+            className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[60px] h-[32px]"
             style={{ backgroundColor: "#A34796" }}
             onClick={handleSave}
             disabled={!isValid}
           >
-            <FaCheck className="text-sm" />
+            Update
           </button>
         ) : current ? (
           <button
