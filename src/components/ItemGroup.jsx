@@ -3,8 +3,8 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
 import { usePlan } from "./PlanContext";
 
-export default function ItemGroup({ group }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ItemGroup({ group, index }) {
+  const [isOpen, setIsOpen] = useState(index === 0);
   const { selected, remove } = usePlan();
 
   const handleToggle = () => setIsOpen((prev) => !prev);
@@ -46,22 +46,21 @@ export default function ItemGroup({ group }) {
           </div>
         </div>
 
-        {/* Show total selected count as a badge */}
         {!isOpen && totalQuantity > 0 && (
           <div className="flex items-center text-sm whitespace-nowrap">
-            <span className="inline-block px-3 py-[3px] rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
-            {totalQuantity} Licence{totalQuantity !== 1 ? "s" : ""} selected
+            <span className="inline-block px-3 py-[3px] rounded-full text-xs font-medium" style={{ backgroundColor: '#EEF8FD', color: '#356E8E' }}>
+              {totalQuantity} Licence{totalQuantity !== 1 ? "s" : ""} selected
             </span>
           </div>
         )}
       </div>
 
-      {/* Expanded table view */}
+      {/* Table */}
       {isOpen && group.options.length > 0 && (
-        <div className="border border-gray-300 rounded-md overflow-hidden mt-3">
-          <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_70px] gap-2 px-4 text-sm font-semibold text-gray-700 bg-gray-50 border-b py-2">
-            <div>Option</div>
-            <div>Term</div>
+        <div className="border border-gray-300 rounded-md overflow-hidden mt-3 p-2">
+          <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_72px] gap-2 px-2 text-sm font-semibold text-white bg-[#706685] border-b py-3 rounded mb-1">
+            <div className="pl-4">Option</div>
+            <div className="pl-2">Term</div>
             <div>Billing</div>
             <div>Licence</div>
             <div className="text-left">Price</div>
@@ -77,18 +76,17 @@ export default function ItemGroup({ group }) {
               isLast={index === group.options.length - 1}
             />
           ))}
-        </div>
-      )}
 
-      {/* Clear All visible only when expanded */}
-      {isOpen && showClearAll && (
-        <div className="pt-2 text-right">
-          <button
-            onClick={handleClear}
-            className="text-xs text-red-500 hover:underline"
-          >
-            Clear All
-          </button>
+          {showClearAll && (
+            <div className="pt-3 text-right pr-3">
+              <button
+                onClick={handleClear}
+                className="text-xs text-red-500 hover:underline"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

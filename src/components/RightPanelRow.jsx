@@ -87,11 +87,11 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
           </button>
         ) : (
           <button
-            className="flex items-center justify-center text-sm px-4 py-2 rounded-md"
+            className="w-[32px] h-[32px] flex items-center justify-center rounded-md border bg-white border-gray-300 text-[#383838] hover:bg-gray-50 flex-shrink-0"
             onClick={handleRemove}
             title="Remove"
           >
-            <FaTrash className="text-red-500 text-sm" />
+            <FaTrash className="text-sm" />
           </button>
         )}
       </div>
