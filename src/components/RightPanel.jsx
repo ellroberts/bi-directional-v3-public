@@ -44,14 +44,18 @@ export default function RightPanel() {
     );
   }, 0);
 
+  // Filter groups that have selected options
+  const groupsWithOptions = Object.entries(groupLabels).filter(([groupId]) => {
+    const options = selected[groupId];
+    return options && Object.keys(options).length > 0;
+  });
+
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">Order summary</h2>
 
-      {Object.entries(groupLabels).map(([groupId, label]) => {
+      {groupsWithOptions.map(([groupId, label], index) => {
         const options = selected[groupId];
-        if (!options || Object.keys(options).length === 0) return null;
-
         const isExpanded = expandedGroups[groupId];
         const optionCount = Object.keys(options).length;
         const totalQty = Object.values(options).reduce(
@@ -60,57 +64,67 @@ export default function RightPanel() {
         );
 
         return (
-          <div key={groupId} className="mb-6">
-            <div
-              className="flex items-start justify-between cursor-pointer"
-              onClick={() => toggleGroup(groupId)}
-            >
-              <div className="flex items-start gap-2 flex-1 min-w-0">
-                {isExpanded ? (
-                  <FaChevronDown className="text-sm mt-1" />
-                ) : (
-                  <FaChevronRight className="text-sm mt-1" />
-                )}
-                <div className="flex flex-col">
-                  <div className="font-semibold truncate">{label}</div>
-                  {!isExpanded && (
-                    <div className="text-sm text-gray-500 space-y-0.5">
-                      <div>
+          <React.Fragment key={groupId}>
+            <div className="mb-6">
+              <div className="flex items-start justify-between cursor-pointer"
+                onClick={() => toggleGroup(groupId)}
+              >
+                <div className="flex items-start gap-2 flex-1 min-w-0">
+                  {isExpanded ? (
+                    <FaChevronDown className="text-sm mt-1" />
+                  ) : (
+                    <FaChevronRight className="text-sm mt-1" />
+                  )}
+                  <div className="flex flex-col">
+                    <div className="font-semibold truncate">{label}</div>
+                    {isExpanded ? (
+                      <div className="text-sm text-gray-500">
                         {optionCount} option{optionCount > 1 ? "s" : ""} selected
                       </div>
-                      <div className="text-xs text-gray-400">
-                        {totalQty} licence{totalQty !== 1 ? "s" : ""} selected
+                    ) : (
+                      <div className="text-sm text-gray-500 space-y-0.5">
+                        <div>
+                          {optionCount} option{optionCount > 1 ? "s" : ""} selected
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {totalQty} licence{totalQty !== 1 ? "s" : ""} selected
+                        </div>
                       </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {isExpanded && (
+                <div className="pt-2 space-y-4">
+                  {Object.entries(options).map(([optionId, opt], index) => (
+                    <RightPanelRow
+                      key={`${groupId}-${optionId}`}
+                      groupId={groupId}
+                      optionId={index + 1}
+                      opt={opt}
+                    />
+                  ))}
+
+                  {optionCount > 1 && (
+                    <div className="text-right pt-1">
+                      <button
+                        onClick={() => handleClearGroup(groupId)}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Clear All
+                      </button>
                     </div>
                   )}
                 </div>
-              </div>
+              )}
             </div>
 
-            {isExpanded && (
-              <div className="pt-2 space-y-4">
-                {Object.entries(options).map(([optionId, opt]) => (
-                  <RightPanelRow
-                    key={`${groupId}-${optionId}`}
-                    groupId={groupId}
-                    optionId={optionId}
-                    opt={opt}
-                  />
-                ))}
-
-                {optionCount > 1 && (
-                  <div className="text-right pt-1">
-                    <button
-                      onClick={() => handleClearGroup(groupId)}
-                      className="text-xs text-red-500 hover:underline"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                )}
-              </div>
+            {/* Add divider between groups (but not after the last group) */}
+            {index < groupsWithOptions.length - 1 && (
+              <div className="border-t border-gray-300 my-4"></div>
             )}
-          </div>
+          </React.Fragment>
         );
       })}
 
