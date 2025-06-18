@@ -75,20 +75,21 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
   return (
     <div>
+      {/* 5-COLUMN ROW LAYOUT */}
       <div
-        className={`grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_72px] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${getBackgroundColor()}`}
+        className={`grid grid-cols-5 lg:grid-cols-[64px_110px_90px_200px_1fr] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${getBackgroundColor()}`}
       >
         <div className="pl-4">{index + 1}</div>
-        <div className="pl-2">{option.term}</div>
+        <div className="pl-2 truncate">{option.term}</div>
         
         {/* Billing column with "Free" text for free trials */}
-        <div>
+        <div className="truncate">
           {isFreeTrialOption ? "Free" : option.billing}
         </div>
 
         {/* Licence control */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-3 p-1 rounded-lg border-2 border-gray-300 bg-white">
+          <div className="flex items-center gap-2 p-1 rounded-lg border-2 border-gray-300 bg-white flex-shrink-0">
             {/* Minus button */}
             <button
               disabled={!isQtyNumber || parsedQty <= minQty}
@@ -107,7 +108,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                   remove(groupId, option.id);
                 }
               }}
-              className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium ${
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || parsedQty <= minQty
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-gray-500 hover:bg-gray-600"
@@ -140,7 +141,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                   e.target.blur(); // This will trigger onBlur
                 }
               }}
-              className={`w-8 text-center text-sm font-bold bg-transparent border-none focus:outline-none
+              className={`w-10 text-center text-sm font-bold bg-transparent border-none focus:outline-none
                 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none
                 ${showValidationError ? 'text-red-600' : 'text-gray-800'}`}
             />
@@ -164,7 +165,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                   });
                 }
               }}
-              className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium ${
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || (typeof maxQty === "number" && parsedQty >= maxQty)
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-gray-500 hover:bg-gray-600"
@@ -175,67 +176,67 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           </div>
 
           {(option.min > 0 || option.max > 0) && (
-            <div className="text-xs text-gray-500 leading-tight whitespace-nowrap">
+            <div className="text-xs text-gray-500 leading-tight whitespace-nowrap flex-shrink-0">
               {option.min > 0 && <div>Min {option.min}</div>}
               {option.max > 0 && <div>Max {option.max}</div>}
             </div>
           )}
         </div>
 
-        {/* Price column */}
-        <div className="text-left">
-          {isFreeTrialOption ? "£0" : `£${option.price}`}
-        </div>
+        {/* Price + Actions combined column */}
+        <div className="flex items-center justify-between pr-2">
+          <div className="font-medium">
+            {isFreeTrialOption ? "£0" : `£${option.price}`}
+          </div>
+          <div className="flex gap-2">
+            {/* Add/Update button - consistent width for all states */}
+            {current && hasChanged ? (
+              <button
+                className={`px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[55px] h-8 ${
+                  isValid ? 'bg-[#A34796] hover:bg-[#8a3985]' : 'bg-gray-400 cursor-not-allowed'
+                }`}
+                onClick={handleSave}
+                disabled={!isValid}
+              >
+                Update
+              </button>
+            ) : current ? (
+              <button
+                className="px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[55px] h-8"
+                style={{ backgroundColor: "#A34796" }}
+                onClick={handleRemove}
+              >
+                <FaCheck className="text-xs" />
+              </button>
+            ) : (
+              <button
+                className={`px-2 py-1 text-xs font-medium rounded-md border-2 w-[55px] h-8 flex items-center justify-center ${
+                  isValid
+                    ? "border-[#A34796] text-[#A34796] hover:bg-[#fdf0fa]"
+                    : "border-gray-300 text-gray-400 cursor-not-allowed"
+                }`}
+                onClick={handleSave}
+                disabled={!isValid}
+                title={!isValid ? validationMessage : ""}
+              >
+                Add
+              </button>
+            )}
 
-        {/* Buttons container */}
-        <div className="flex justify-end gap-2 pr-2">
-          {/* Add/Update button */}
-          {current && hasChanged ? (
+            {/* Remove button */}
             <button
-              className={`px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[60px] h-[32px] ${
-                isValid ? 'bg-[#A34796] hover:bg-[#8a3985]' : 'bg-gray-400 cursor-not-allowed'
+              className={`w-8 h-8 flex items-center justify-center rounded-md border bg-white flex-shrink-0 ${
+                isSelected
+                  ? "border-gray-300 text-[#383838] hover:bg-gray-50"
+                  : "border-gray-200 text-gray-300 cursor-not-allowed"
               }`}
-              onClick={handleSave}
-              disabled={!isValid}
-            >
-              Update
-            </button>
-          ) : current ? (
-            <button
-              className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px]"
-              style={{ backgroundColor: "#A34796" }}
               onClick={handleRemove}
+              disabled={!isSelected}
+              title="Remove"
             >
-              <FaCheck className="text-sm" />
+              <FaTrash className="text-xs" />
             </button>
-          ) : (
-            <button
-              className={`px-3 py-1.5 text-sm font-medium rounded-md border-2 min-w-[50px] h-[32px] flex items-center justify-center ${
-                isValid
-                  ? "border-[#A34796] text-[#A34796] hover:bg-[#fdf0fa]"
-                  : "border-gray-300 text-gray-400 cursor-not-allowed"
-              }`}
-              onClick={handleSave}
-              disabled={!isValid}
-              title={!isValid ? validationMessage : ""}
-            >
-              Add
-            </button>
-          )}
-
-          {/* Remove button */}
-          <button
-            className={`w-[32px] h-[32px] flex items-center justify-center rounded-md border bg-white flex-shrink-0 ${
-              isSelected
-                ? "border-gray-300 text-[#383838] hover:bg-gray-50"
-                : "border-gray-200 text-gray-300 cursor-not-allowed"
-            }`}
-            onClick={handleRemove}
-            disabled={!isSelected}
-            title="Remove"
-          >
-            <FaTrash className="text-sm" />
-          </button>
+          </div>
         </div>
       </div>
       
