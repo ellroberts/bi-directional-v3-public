@@ -34,7 +34,7 @@ const data = [
     ],
   },
   {
-    name: "Dynamics 365 Finance Premium (30 day trial)",
+    name: "Dynamics 365 Finance Premium (30-day trial)",
     id: "dynamics-finance-premium-trial",
     options: [
       { id: "1", term: "Monthly", billing: "Free trial", price: 0, min: 25, max: 25 },
