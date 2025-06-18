@@ -11,7 +11,6 @@ const data = [
       { id: "1", term: "Monthly", billing: "Monthly", price: 7, min: 10 },
       { id: "2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
       { id: "3", term: "Annual", billing: "Annual", price: 7, min: 0 },
-      { id: "4", term: "Monthly", billing: "Free", price: 0, min: 0 }, // ✅ New free option
     ],
   },
   {
@@ -22,7 +21,6 @@ const data = [
       { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
       { id: "standard-3", term: "Annual", billing: "Monthly", price: 7, min: 0 },
       { id: "standard-4", term: "Annual", billing: "Annual", price: 7, min: 0 },
-      { id: "standard-5", term: "Monthly", billing: "Free", price: 0, min: 0 }, // ✅ New free option
     ],
   },
   {
@@ -33,23 +31,18 @@ const data = [
       { id: "premium-2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
       { id: "premium-3", term: "Annual", billing: "Monthly", price: 7, min: 0 },
       { id: "premium-4", term: "Annual", billing: "Annual", price: 7, min: 0 },
-      { id: "premium-trial", term: "Monthly", billing: "Free", price: 0, min: 0 } // ✅ Existing free option
     ],
   },
-  // Commented out empty groups to prevent errors
-  // {
-  //   name: "Something else",
-  //   id: "other-1", 
-  //   options: [],
-  // },
-  // {
-  //   name: "Something else",
-  //   id: "other-2",
-  //   options: [],
-  // },
+  {
+    name: "Dynamics 365 Finance Premium (30 day trial)",
+    id: "dynamics-finance-premium-trial",
+    options: [
+      { id: "1", term: "Monthly", billing: "Free trial", price: 0, min: 25, max: 25 },
+    ],
+  },
 ];
 
-export default function LeftPanel({ view, setView, selectedOnly }) {
+export default function LeftPanel({ view, setView, selectedOnly, searchTerm = "" }) {
   if (view === "popular") {
     return (
       <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
@@ -79,11 +72,40 @@ export default function LeftPanel({ view, setView, selectedOnly }) {
     );
   }
 
+  // Filter services based on search term
+  const filteredData = data.filter(service => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    const serviceName = service.name.toLowerCase();
+    
+    // Special handling for trial/free searches
+    if (searchLower.includes('trial') || searchLower.includes('free')) {
+      // Show trial services when searching for "trial" or "free"
+      if (serviceName.includes('trial')) return true;
+      // Also check if service has free trial options
+      const hasFreeOptions = service.options.some(option => 
+        option.billing && option.billing.toLowerCase().includes('free')
+      );
+      if (hasFreeOptions) return true;
+    }
+    
+    // Regular text search in service name
+    return serviceName.includes(searchLower);
+  });
+
   return (
     <div>
-      {data.map((group, index) => (
-        <ItemGroup key={group.id} group={group} index={index} />
-      ))}
+      {filteredData.length > 0 ? (
+        filteredData.map((group, index) => (
+          <ItemGroup key={group.id} group={group} index={index} />
+        ))
+      ) : (
+        <div className="text-center py-8 text-gray-500">
+          <p>No services found matching "{searchTerm}"</p>
+          <p className="text-sm mt-2">Try searching for "trial", "free", or a service name</p>
+        </div>
+      )}
     </div>
   );
 }

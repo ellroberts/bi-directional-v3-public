@@ -15,6 +15,7 @@ function AppContent() {
 
   const [view, setView] = useState("popular");
   const [selectedOnly, setSelectedOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <div className={`${isRedline ? "debug-all" : ""} min-h-screen bg-gray-50`}>
@@ -34,22 +35,17 @@ function AppContent() {
   setView={setView}
   selectedOnly={selectedOnly}
   setSelectedOnly={setSelectedOnly}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
 />
 
              {/* Plan content */}
-             <LeftPanel view={view} setView={setView} selectedOnly={selectedOnly} />
-
-{view !== "popular" &&
-  [1, 2, 3, 4, 5].map((i) => (
-    <ItemGroup
-      key={`placeholder-${i}`}
-      group={{
-        id: `placeholder-${i}`,
-        name: "Something else",
-        options: [],
-      }}
-    />
-  ))}
+             <LeftPanel 
+               view={view} 
+               setView={setView} 
+               selectedOnly={selectedOnly} 
+               searchTerm={searchTerm}
+             />
 
             </div>
 
