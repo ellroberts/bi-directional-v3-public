@@ -54,20 +54,18 @@ export default function ItemGroup({ group, index }) {
             </div>
           </div>
         </div>
-
-        {/* Remove the separate badge section since it's now inline */}
       </div>
 
       {/* Table */}
       {isOpen && group.options.length > 0 && (
         <div className="border border-gray-300 rounded-md overflow-hidden mt-3 p-2">
-          <div className="grid grid-cols-6 lg:grid-cols-[64px_110px_90px_1fr_70px_72px] gap-2 px-2 text-sm font-semibold text-white bg-[#706685] border-b py-3 rounded mb-1">
+          {/* 5-COLUMN LAYOUT */}
+          <div className="grid grid-cols-5 lg:grid-cols-[64px_110px_90px_200px_1fr] gap-2 px-2 text-sm font-semibold text-white bg-[#706685] border-b py-3 rounded mb-1">
             <div className="pl-4">Option</div>
             <div className="pl-2">Term</div>
             <div>Billing</div>
             <div>Licence</div>
             <div className="text-left">Price</div>
-            <div></div>
           </div>
 
           {group.options.map((option, index) => (
