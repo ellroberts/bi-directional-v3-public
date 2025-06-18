@@ -5,8 +5,22 @@ import { FaTrash } from "react-icons/fa";
 export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
   const { addOrUpdate, remove } = usePlan();
 
+  // Find the option number for display (this is just for UI display)
+  const getOptionDisplayNumber = () => {
+    // For MS365 products, extract number from IDs like "standard-1", "premium-2", etc.
+    if (typeof optionId === 'string' && optionId.includes('-')) {
+      const parts = optionId.split('-');
+      return parts[parts.length - 1]; // Get the last part (the number)
+    }
+    // For simple numeric IDs, just return the ID
+    return optionId;
+  };
+
+  const displayNumber = getOptionDisplayNumber();
+
   // Use EXACT same logic as left panel
   const minQty = opt.min || 0;
+  const maxQty = opt.max;
   const committedQty = opt.qty ?? null;
   const [inputQty, setInputQty] = useState(committedQty ?? minQty);
 
@@ -18,13 +32,25 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
   // EXACT same logic as left panel
   const parsedQty = Number(inputQty);
   const isQtyNumber = !isNaN(parsedQty);
-  const isValid = isQtyNumber && parsedQty >= minQty;
+  
+  // Enhanced validation logic
+  const isWithinRange = isQtyNumber && 
+    parsedQty >= minQty && 
+    (maxQty === undefined || parsedQty <= maxQty);
+  
+  const isValid = isWithinRange;
   const hasChanged = isQtyNumber && parsedQty !== committedQty;
   const isSelected = !!committedQty;
 
+  // Check if this is a free trial option
+  const isFreeTrialOption = opt.billing && opt.billing.includes("Free trial");
+
   const handleSave = () => {
-    const newQty = parsedQty === 0 && !committedQty ? 1 : parsedQty;
-    if (isQtyNumber && newQty >= minQty) {
+    // Only allow saving if the quantity is valid
+    if (!isValid) return;
+    
+    const newQty = parsedQty === 0 && !committedQty ? (minQty || 1) : parsedQty;
+    if (isQtyNumber && newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
       addOrUpdate(groupId, optionId, {
         ...opt,
         qty: newQty,
@@ -37,19 +63,24 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
     remove(groupId, optionId);
   };
 
+  // Show validation error message
+  const showValidationError = isQtyNumber && !isWithinRange;
+  let validationMessage = "";
+  if (showValidationError) {
+    if (parsedQty < minQty) {
+      validationMessage = `Minimum ${minQty} required`;
+    } else if (maxQty && parsedQty > maxQty) {
+      validationMessage = `Maximum ${maxQty} allowed`;
+    }
+  }
+
   return (
     <div className={`mt-3 ${isDebug ? "debug-border" : ""}`}>
       <div className="text-sm text-gray-700">
-        Option {optionId} - <span className="font-bold text-gray-800">£{opt.price}</span>
+        Option {displayNumber} - <span className="font-bold text-gray-800">£{opt.price}</span>
       </div>
       <div className="text-sm text-gray-500">
-        {opt.term} / {opt.billing === "Free" ? (
-          <span className="inline-block px-2 py-0.5 rounded-full bg-green-500 text-white text-xs font-medium ml-1">
-            Free
-          </span>
-        ) : (
-          opt.billing
-        )}
+        {opt.term} / {isFreeTrialOption ? "Free" : opt.billing}
       </div>
 
       <div className="flex items-center justify-between mt-2">
@@ -64,7 +95,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
                 const newQty = parsedQty - 1;
                 setInputQty(newQty);
                 // Auto-save when using +/- buttons, or remove if going below minimum
-                if (newQty >= minQty) {
+                if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
                     qty: newQty,
@@ -83,7 +114,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
               −
             </button>
 
-            {/* Input field - EXACT copy from left panel */}
+            {/* Input field - EXACT copy from left panel with validation styling */}
             <input
               type="number"
               inputMode="numeric"
@@ -91,7 +122,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
               onChange={(e) => setInputQty(e.target.value)}
               onBlur={() => {
                 // Auto-save when user finishes typing (loses focus)
-                if (isQtyNumber && parsedQty >= minQty) {
+                if (isQtyNumber && isWithinRange) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
                     qty: parsedQty,
@@ -107,23 +138,24 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
                   e.target.blur(); // This will trigger onBlur
                 }
               }}
-              className="w-8 text-center text-sm font-bold text-gray-800 bg-transparent border-none focus:outline-none
-                [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className={`w-8 text-center text-sm font-bold bg-transparent border-none focus:outline-none
+                [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none
+                ${showValidationError ? 'text-red-600' : 'text-gray-800'}`}
             />
 
             {/* Plus button - EXACT copy from left panel */}
             <button
               disabled={
                 !isQtyNumber ||
-                (typeof opt.max === "number" && parsedQty >= opt.max)
+                (typeof maxQty === "number" && parsedQty >= maxQty)
               }
               onClick={() => {
                 if (!isQtyNumber) return;
-                if (typeof opt.max === "number" && parsedQty >= opt.max) return;
+                if (typeof maxQty === "number" && parsedQty >= maxQty) return;
                 const newQty = parsedQty + 1;
                 setInputQty(newQty);
                 // Auto-save when using +/- buttons
-                if (newQty >= minQty) {
+                if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
                     qty: newQty,
@@ -131,7 +163,7 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
                 }
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium ${
-                !isQtyNumber || (typeof opt.max === "number" && parsedQty >= opt.max)
+                !isQtyNumber || (typeof maxQty === "number" && parsedQty >= maxQty)
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-gray-500 hover:bg-gray-600"
               }`}
@@ -152,10 +184,12 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
         <div className="flex gap-2">
           {hasChanged ? (
             <button
-              className="px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px]"
-              style={{ backgroundColor: "#A34796" }}
+              className={`px-3 py-1.5 flex items-center justify-center text-white rounded-md text-sm font-medium min-w-[50px] h-[32px] ${
+                isValid ? 'bg-[#A34796] hover:bg-[#8a3985]' : 'bg-gray-400 cursor-not-allowed'
+              }`}
               onClick={handleSave}
               disabled={!isValid}
+              title={!isValid ? validationMessage : ""}
             >
               Update
             </button>
@@ -175,6 +209,13 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
           )}
         </div>
       </div>
+      
+      {/* Validation error message */}
+      {showValidationError && (
+        <div className="text-xs text-red-600 mt-1">
+          {validationMessage}
+        </div>
+      )}
     </div>
   );
 }

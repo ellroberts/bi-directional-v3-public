@@ -8,8 +8,9 @@ export default function RightPanel() {
 
   const groupLabels = {
     ms365: "MS365 Business Basic",
-    standard: "MS365 Business Standard",
+    standard: "MS365 Business Standard", 
     premium: "MS365 Business Premium",
+    "dynamics-finance-premium-trial": "Dynamics 365 Finance Premium (30 day trial)",
   };
 
   const [expandedGroups, setExpandedGroups] = useState(() => {
@@ -75,33 +76,43 @@ export default function RightPanel() {
                   ) : (
                     <FaChevronRight className="text-sm mt-1" />
                   )}
-                  <div className="flex flex-col">
-                    <div className="font-semibold truncate">{label}</div>
-                    {isExpanded ? (
-                      <div className="text-sm text-gray-500">
-                        {optionCount} option{optionCount > 1 ? "s" : ""} selected
-                      </div>
-                    ) : (
-                      <div className="text-sm text-gray-500 space-y-0.5">
-                        <div>
-                          {optionCount} option{optionCount > 1 ? "s" : ""} selected
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {totalQty} licence{totalQty !== 1 ? "s" : ""} selected
-                        </div>
-                      </div>
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <div className="font-semibold break-words">
+                      {label.includes('(30 day trial)') 
+                        ? label.replace(' (30 day trial)', '') 
+                        : label}
+                    </div>
+                    {label.includes('(30 day trial)') && (
+                      <div className="font-semibold text-gray-600 text-sm">(30 day trial)</div>
                     )}
+                    
+                    {/* 16px gap between title and details */}
+                    <div className="mt-4 text-sm text-gray-500 flex items-center gap-2">
+                      <span>
+                        {optionCount} option{optionCount > 1 ? "s" : ""} selected
+                      </span>
+                      
+                      {/* Show free badge for trial services */}
+                      {label.includes('(30 day trial)') && (
+                        <span className="inline-block px-2 py-0.5 rounded-full bg-green-500 text-white text-xs font-medium">
+                          Free
+                        </span>
+                      )}
+                      
+                      <span>-</span>
+                      <span>{totalQty} licence{totalQty !== 1 ? "s" : ""}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="pt-2 space-y-4">
-                  {Object.entries(options).map(([optionId, opt], index) => (
+                <div className="pt-2 space-y-4 pl-6">
+                  {Object.entries(options).map(([actualOptionId, opt], index) => (
                     <RightPanelRow
-                      key={`${groupId}-${optionId}`}
+                      key={`${groupId}-${actualOptionId}`}
                       groupId={groupId}
-                      optionId={index + 1}
+                      optionId={actualOptionId}  // Use the actual option ID, not index + 1
                       opt={opt}
                     />
                   ))}
