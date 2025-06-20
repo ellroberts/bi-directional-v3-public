@@ -52,7 +52,6 @@ export default function LeftPanel({ view, setView, selectedOnly, searchTerm = ""
         <div className="text-lg font-semibold text-black space-y-6">
           <div className="max-w-md mx-auto">
             <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">Ready to feature your top products?</h3>
-            <p className="text-base font-normal text-center mb-6">Your team hasn't marked any products as popular. </p>
             <p className="text-base font-normal text-center mb-6">
               If you're an administrator, go to{" "}
               <a href="/supply-product-mapping" className="text-[#A34796] hover:underline font-medium">
