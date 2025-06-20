@@ -16,11 +16,22 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
   const maxQty = option.max;
   const committedQty = current?.qty ?? null;
   const [inputQty, setInputQty] = useState(committedQty ?? minQty);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('Loading');
 
   useEffect(() => {
     const fallback = option.min || 0;
     setInputQty(committedQty ?? fallback);
   }, [committedQty, option.min]);
+
+  // Debug logging for state changes
+  useEffect(() => {
+    console.log(`Component ${option.id} - Loading state changed:`, isLoading);
+  }, [isLoading, option.id]);
+
+  useEffect(() => {
+    console.log(`Component ${option.id} - Current selection:`, current);
+  }, [current, option.id]);
 
   const parsedQty = Number(inputQty);
   const isQtyNumber = !isNaN(parsedQty);
@@ -39,16 +50,38 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
   const handleSave = () => {
     // Only allow saving if the quantity is valid
-    if (!isValid) return;
+    if (!isValid || isLoading) return;
     
+    console.log('Starting save, setting loading to true');
+    setIsLoading(true);
+    
+    // Store the values we need before any state changes
     const newQty = parsedQty === 0 && !current ? (minQty || 1) : parsedQty;
-    if (isQtyNumber && newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
-      addOrUpdate(groupId, option.id, {
-        ...option,
-        qty: newQty,
-      });
-      setInputQty(newQty);
-    }
+    
+    // Animate loading text
+    let dotCount = 0;
+    const textInterval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4;
+      setLoadingText('Loading' + '.'.repeat(dotCount));
+    }, 200);
+    
+    // Use setTimeout to delay the actual save operation
+    setTimeout(() => {
+      clearInterval(textInterval);
+      
+      // Only update if quantity is still valid
+      if (isQtyNumber && newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
+        addOrUpdate(groupId, option.id, {
+          ...option,
+          qty: newQty,
+        });
+        setInputQty(newQty);
+      }
+      
+      console.log('Save complete, setting loading to false');
+      setLoadingText('Loading');
+      setIsLoading(false);
+    }, 1200);
   };
 
   const handleRemove = () => {
@@ -87,26 +120,17 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           {isFreeTrialOption ? "Free" : option.billing}
         </div>
 
-        {/* Licence control */}
+        {/* Licence control - MVP VERSION: No auto-save on +/- buttons */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 p-1 rounded-lg border-2 border-gray-300 bg-white flex-shrink-0">
-            {/* Minus button */}
+            {/* Minus button - NO AUTO-SAVE */}
             <button
               disabled={!isQtyNumber || parsedQty <= minQty}
               onClick={() => {
                 if (!isQtyNumber) return;
                 const newQty = parsedQty - 1;
                 setInputQty(newQty);
-                // Auto-save when using +/- buttons, or remove if going below minimum
-                if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
-                  addOrUpdate(groupId, option.id, {
-                    ...option,
-                    qty: newQty,
-                  });
-                } else if (newQty < minQty && current) {
-                  // Remove the item if quantity goes below minimum
-                  remove(groupId, option.id);
-                }
+                // MVP: No auto-save, just update the input state
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || parsedQty <= minQty
@@ -117,28 +141,17 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               −
             </button>
 
-            {/* Input field with validation styling */}
+            {/* Input field - NO AUTO-SAVE */}
             <input
               type="number"
               inputMode="numeric"
               value={inputQty}
               onChange={(e) => setInputQty(e.target.value)}
-              onBlur={() => {
-                // Auto-save when user finishes typing (loses focus)
-                if (isQtyNumber && isWithinRange) {
-                  addOrUpdate(groupId, option.id, {
-                    ...option,
-                    qty: parsedQty,
-                  });
-                } else if (parsedQty < minQty && current) {
-                  // Remove if below minimum
-                  remove(groupId, option.id);
-                }
-              }}
+              // MVP: Remove onBlur auto-save
               onKeyDown={(e) => {
-                // Auto-save when user presses Enter
+                // MVP: Remove auto-save on Enter
                 if (e.key === 'Enter') {
-                  e.target.blur(); // This will trigger onBlur
+                  e.target.blur();
                 }
               }}
               className={`w-10 text-center text-sm font-bold bg-transparent border-none focus:outline-none
@@ -146,7 +159,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 ${showValidationError ? 'text-red-600' : 'text-gray-800'}`}
             />
 
-            {/* Plus button */}
+            {/* Plus button - NO AUTO-SAVE */}
             <button
               disabled={
                 !isQtyNumber ||
@@ -157,13 +170,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 if (typeof maxQty === "number" && parsedQty >= maxQty) return;
                 const newQty = parsedQty + 1;
                 setInputQty(newQty);
-                // Auto-save when using +/- buttons
-                if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
-                  addOrUpdate(groupId, option.id, {
-                    ...option,
-                    qty: newQty,
-                  });
-                }
+                // MVP: No auto-save, just update the input state
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || (typeof maxQty === "number" && parsedQty >= maxQty)
@@ -189,37 +196,40 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
             {isFreeTrialOption ? "£0" : `£${option.price}`}
           </div>
           <div className="flex gap-2">
-            {/* Add/Update button - consistent width for all states */}
-            {current && hasChanged ? (
+            {/* MVP: Always show Add/Update button when there are changes or not selected */}
+            {!current || hasChanged ? (
               <button
-                className={`px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[55px] h-8 ${
-                  isValid ? 'bg-[#A34796] hover:bg-[#8a3985]' : 'bg-gray-400 cursor-not-allowed'
+                className={`px-2 py-1 flex items-center justify-center rounded-md text-sm font-medium w-[70px] h-8 border-2 transition-colors ${
+                  isLoading 
+                    ? 'bg-[#A34796] text-white border-[#A34796] cursor-not-allowed'
+                    : isValid 
+                      ? (current && hasChanged 
+                          ? 'bg-[#A34796] text-white border-[#A34796] hover:bg-[#8a3985] hover:border-[#8a3985]' 
+                          : 'border-[#A34796] text-[#A34796] bg-white hover:bg-[#fdf0fa]')
+                      : 'border-gray-300 text-gray-400 bg-white cursor-not-allowed'
                 }`}
                 onClick={handleSave}
-                disabled={!isValid}
+                disabled={!isValid || isLoading}
+                title={!isValid ? validationMessage : ""}
               >
-                Update
+                {/* White animated loading icon */}
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-1">
+                    <div className="w-1 h-1 bg-white rounded-full animate-bounce"></div>
+                    <div className="w-1 h-1 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                    <div className="w-1 h-1 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                  </div>
+                ) : (
+                  current && hasChanged ? 'Update' : 'Add'
+                )}
               </button>
-            ) : current ? (
+            ) : (
+              /* Show solid fill with check mark when selected and no changes */
               <button
-                className="px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[55px] h-8"
-                style={{ backgroundColor: "#A34796" }}
+                className="px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[70px] h-8 bg-[#A34796] border-2 border-[#A34796] hover:bg-[#8a3985] hover:border-[#8a3985]"
                 onClick={handleRemove}
               >
                 <FaCheck className="text-xs" />
-              </button>
-            ) : (
-              <button
-                className={`px-2 py-1 text-xs font-medium rounded-md border-2 w-[55px] h-8 flex items-center justify-center ${
-                  isValid
-                    ? "border-[#A34796] text-[#A34796] hover:bg-[#fdf0fa]"
-                    : "border-gray-300 text-gray-400 cursor-not-allowed"
-                }`}
-                onClick={handleSave}
-                disabled={!isValid}
-                title={!isValid ? validationMessage : ""}
-              >
-                Add
               </button>
             )}
 
