@@ -84,7 +84,7 @@ export default function ItemGroup({ group, index }) {
           ))}
 
           {showClearAll && (
-            <div className="pt-3 text-right pr-3">
+            <div className="flex justify-end items-center pr-3 py-2">
               <button
                 onClick={handleClear}
                 className="text-xs text-red-500 hover:underline"
@@ -93,6 +93,7 @@ export default function ItemGroup({ group, index }) {
               </button>
             </div>
           )}
+
         </div>
       )}
     </div>
