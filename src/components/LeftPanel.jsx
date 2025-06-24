@@ -81,19 +81,13 @@ export default function LeftPanel({ view, setView, selectedOnly, searchTerm = ""
           <div className="max-w-md mx-auto">
             <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
               {selectedOnly
-                ? "No Products Mapped Yet"
+                ? "Title TBD"
                 : "Ready to feature your top products?"}
             </h3>
             <p className="text-base font-normal text-center mb-6">
               {selectedOnly ? (
                 <>
-                  Your team hasn't mapped any products to charge types.
-                  <br /><br />
-                  If you're an administrator, go to {" "}
-                  <a href="/supply-product-mapping" className="text-[#A34796] hover:underline font-medium">
-                    Supply Product Mapping
-                  </a>{" "}
-                  to map products to charge types.
+                  Some text, some more text.
                 </>
               ) : (
                 <>
@@ -119,15 +113,27 @@ export default function LeftPanel({ view, setView, selectedOnly, searchTerm = ""
   return (
     <div>
       {filteredData.length > 0 ? (
-        filteredData.map((group, index) => (
-          <ItemGroup key={group.id} group={group} index={index} />
-        ))
-      ) : (
-        <div className="text-center py-8 text-gray-500">
-          <p>No services found matching "{searchTerm}"</p>
-          <p className="text-sm mt-2">Try searching for "trial", "free", or a service name</p>
-        </div>
-      )}
+  filteredData.map((group, index) => (
+    <ItemGroup key={group.id} group={group} index={index} />
+  ))
+) : (
+  <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
+    <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
+      <FaThLarge className="text-2xl text-[#A34796]" />
+    </div>
+    <div className="text-lg font-semibold text-black space-y-6">
+      <div className="max-w-md mx-auto">
+        <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
+          No services found
+        </h3>
+        <p className="text-base font-normal text-center mb-6">
+          Try searching for <span className="font-medium">“trial”</span>, <span className="font-medium">“free”</span>, or a service name.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
