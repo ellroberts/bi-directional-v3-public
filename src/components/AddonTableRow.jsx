@@ -88,10 +88,9 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
     remove(groupId, option.id);
   };
 
-  // Determine background color based on selection and billing type
+  // Determine background color based on selection and billing type (changed back to match other selected rows for now)
   const getBackgroundColor = () => {
     if (!isSelected) return "bg-white";
-    if (isFreeTrialOption) return "bg-green-50";
     return "bg-[#F3F2F5]";
   };
 
@@ -122,7 +121,7 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
 
         {/* Licence control - MVP VERSION: No auto-save on +/- buttons */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 p-1 rounded-lg border-2 border-gray-300 bg-white flex-shrink-0">
+          <div className="flex items-center gap-2 p-1 rounded-lg border border-gray-300 bg-white flex-shrink-0">
             {/* Minus button - NO AUTO-SAVE */}
             <button
               disabled={!isQtyNumber || parsedQty <= minQty}
