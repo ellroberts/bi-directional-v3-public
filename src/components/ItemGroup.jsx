@@ -25,7 +25,6 @@ export default function ItemGroup({ group, index }) {
     });
   };
 
-  // Check if this is a trial service (now checking for both "trial" and "(30 day trial)" patterns)
   const isTrialService = group.name.toLowerCase().includes('trial');
 
   return (
@@ -41,11 +40,17 @@ export default function ItemGroup({ group, index }) {
           ) : (
             <FaChevronRight className="text-sm mt-1" />
           )}
-          <div className="flex flex-col">
-            <div className="font-semibold truncate">{group.name}</div>
+          <div className="flex flex-col relative w-full">
+            <div className="flex justify-between items-center w-full">
+              <div className="font-semibold truncate">{group.name}</div>
+              {!isOpen && totalQuantity > 0 && (
+                <div className="ml-2 bg-[#DEF1FB] text-[#356E8E] text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {totalQuantity} {totalQuantity === 1 ? 'licence' : 'licences'}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>{group.options.length} options available</span>
-              {/* Show free trial badge for trial services */}
               {isTrialService && (
                 <span className="inline-block px-2 py-0.5 rounded-full bg-green-500 text-white text-xs font-medium">
                   Free
