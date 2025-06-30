@@ -139,10 +139,10 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
           <div className="text-lg font-semibold text-black space-y-6">
             <div className="max-w-md mx-auto">
               <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
-                No services found
+                No products found
               </h3>
               <p className="text-base font-normal text-center mb-6">
-                Try searching for <span className="font-medium">“trial”</span>, <span className="font-medium">“free”</span>, or a service name.
+                Try searching for <span className="font-medium">“trial”</span>, <span className="font-medium">“free”</span>, or a product name.
               </p>
             </div>
           </div>
