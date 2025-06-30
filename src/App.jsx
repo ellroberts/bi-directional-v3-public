@@ -20,7 +20,7 @@ function AppContent() {
   return (
     <div className={`${isRedline ? "debug-all" : ""} min-h-screen bg-gray-50`}>
       <div className="max-w-[1200px] mx-auto px-4 py-6 flex flex-col space-y-4 min-h-screen">
-        <h2 className="text-2xl font-bold">Services</h2>
+        <h2 className="text-2xl font-bold">Products</h2>
 
         <DebugToggle />
 
@@ -41,11 +41,12 @@ function AppContent() {
 
              {/* Plan content */}
              <LeftPanel 
-               view={view} 
-               setView={setView} 
-               selectedOnly={selectedOnly} 
-               searchTerm={searchTerm}
-             />
+              view={view} 
+              setView={setView} 
+              selectedOnly={selectedOnly} 
+              setSelectedOnly={setSelectedOnly}  // ✅ ADD THIS LINE
+              searchTerm={searchTerm}
+              />
 
             </div>
 

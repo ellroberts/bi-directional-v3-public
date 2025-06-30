@@ -42,7 +42,7 @@ const data = [
   },
 ];
 
-export default function LeftPanel({ view, setView, selectedOnly, searchTerm = "" }) {
+export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly, searchTerm = "" }) {
   const { selected } = usePlan();
 
   const filteredData = data.filter(service => {
@@ -81,26 +81,41 @@ export default function LeftPanel({ view, setView, selectedOnly, searchTerm = ""
           <div className="max-w-md mx-auto">
             <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
               {selectedOnly
-                ? "Title TBD"
-                : "Ready to feature your top products?"}
+                ? "Start building your order"
+                : "Ready to feature your most popular products?"}
             </h3>
             <p className="text-base font-normal text-center mb-6">
               {selectedOnly ? (
                 <>
-                  Some text, some more text.
+                  <button
+                    onClick={() => {
+                      setSelectedOnly(false);
+                      setView("all");
+                    }}
+                    className="text-[#A34796] hover:underline font-medium"
+                  >
+                    Add products
+                  </button>
+                  , then tick Selected only to view only those Items.
                 </>
               ) : (
                 <>
-                  If you're an administrator, go to {" "}
+                  They’ll appear here once an administrator ticks them in{" "}
                   <a href="/supply-product-mapping" className="text-[#A34796] hover:underline font-medium">
-                    Supply Product Mapping
-                  </a>{" "}
-                  to add the products your team orders most.
+                    Supplier Product Mapping.
+                  </a>
                   <br /><br />
-                  Otherwise, explore {" "}
-                  <button onClick={() => setView("all")} className="text-[#A34796] hover:underline font-medium">
-                    all services
-                  </button>
+                  In the meantime,{" "}
+                  <button
+                    onClick={() => {
+                      setSelectedOnly(false);
+                      setView("all");
+                    }}
+                    className="text-[#A34796] hover:underline font-medium"
+                  >
+                    explore all
+                  </button>{" "}
+                  available products and services.
                 </>
               )}
             </p>
@@ -113,27 +128,26 @@ export default function LeftPanel({ view, setView, selectedOnly, searchTerm = ""
   return (
     <div>
       {filteredData.length > 0 ? (
-  filteredData.map((group, index) => (
-    <ItemGroup key={group.id} group={group} index={index} />
-  ))
-) : (
-  <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
-    <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
-      <FaThLarge className="text-2xl text-[#A34796]" />
-    </div>
-    <div className="text-lg font-semibold text-black space-y-6">
-      <div className="max-w-md mx-auto">
-        <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
-          No services found
-        </h3>
-        <p className="text-base font-normal text-center mb-6">
-          Try searching for <span className="font-medium">“trial”</span>, <span className="font-medium">“free”</span>, or a service name.
-        </p>
-      </div>
-    </div>
-  </div>
-)}
-
+        filteredData.map((group, index) => (
+          <ItemGroup key={group.id} group={group} index={index} />
+        ))
+      ) : (
+        <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
+          <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
+            <FaThLarge className="text-2xl text-[#A34796]" />
+          </div>
+          <div className="text-lg font-semibold text-black space-y-6">
+            <div className="max-w-md mx-auto">
+              <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
+                No services found
+              </h3>
+              <p className="text-base font-normal text-center mb-6">
+                Try searching for <span className="font-medium">“trial”</span>, <span className="font-medium">“free”</span>, or a service name.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
