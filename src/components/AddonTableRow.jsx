@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { usePlan } from "./PlanContext";
-import { FaTrash, FaCheck, FaPlus } from "react-icons/fa";
 
 export default function AddonTableRow({ option, index, groupId, isLast }) {
   const { selected, addOrUpdate, remove } = usePlan();
 
-  // Add safety checks for option prop
   if (!option) {
     console.error('AddonTableRow: option prop is undefined');
     return null;
@@ -24,61 +22,31 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
     setInputQty(committedQty ?? fallback);
   }, [committedQty, option.min]);
 
-  // Debug logging for state changes
-  useEffect(() => {
-    console.log(`Component ${option.id} - Loading state changed:`, isLoading);
-  }, [isLoading, option.id]);
-
-  useEffect(() => {
-    console.log(`Component ${option.id} - Current selection:`, current);
-  }, [current, option.id]);
-
   const parsedQty = Number(inputQty);
   const isQtyNumber = !isNaN(parsedQty);
-  
-  // Enhanced validation logic
-  const isWithinRange = isQtyNumber && 
-    parsedQty >= minQty && 
-    (maxQty === undefined || parsedQty <= maxQty);
-  
+  const isWithinRange = isQtyNumber && parsedQty >= minQty && (maxQty === undefined || parsedQty <= maxQty);
   const isValid = isWithinRange;
   const hasChanged = isQtyNumber && parsedQty !== committedQty;
   const isSelected = !!current;
-
-  // Check if this is a free trial option
   const isFreeTrialOption = option.billing && option.billing.includes("Free trial");
 
   const handleSave = () => {
-    // Only allow saving if the quantity is valid
     if (!isValid || isLoading) return;
-    
-    console.log('Starting save, setting loading to true');
     setIsLoading(true);
-    
-    // Store the values we need before any state changes
     const newQty = parsedQty === 0 && !current ? (minQty || 1) : parsedQty;
-    
-    // Animate loading text
+
     let dotCount = 0;
     const textInterval = setInterval(() => {
       dotCount = (dotCount + 1) % 4;
       setLoadingText('Loading' + '.'.repeat(dotCount));
     }, 200);
-    
-    // Use setTimeout to delay the actual save operation
+
     setTimeout(() => {
       clearInterval(textInterval);
-      
-      // Only update if quantity is still valid
       if (isQtyNumber && newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
-        addOrUpdate(groupId, option.id, {
-          ...option,
-          qty: newQty,
-        });
+        addOrUpdate(groupId, option.id, { ...option, qty: newQty });
         setInputQty(newQty);
       }
-      
-      console.log('Save complete, setting loading to false');
       setLoadingText('Loading');
       setIsLoading(false);
     }, 1200);
@@ -88,48 +56,49 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
     remove(groupId, option.id);
   };
 
-  // Determine background color based on selection and billing type (changed back to match other selected rows for now)
   const getBackgroundColor = () => {
-    if (!isSelected) return "bg-white";
-    return "bg-[#F3F2F5]";
+    return isSelected ? "bg-[#F3F2F5]" : "bg-white";
   };
 
-  // Show validation error message
   const showValidationError = isQtyNumber && !isWithinRange;
   let validationMessage = "";
   if (showValidationError) {
-    if (parsedQty < minQty) {
-      validationMessage = `Minimum ${minQty} required`;
-    } else if (maxQty && parsedQty > maxQty) {
-      validationMessage = `Maximum ${maxQty} allowed`;
-    }
+    if (parsedQty < minQty) validationMessage = `Minimum ${minQty} required`;
+    else if (maxQty && parsedQty > maxQty) validationMessage = `Maximum ${maxQty} allowed`;
   }
 
   return (
     <div>
-      {/* 5-COLUMN ROW LAYOUT */}
-      <div
-        className={`grid grid-cols-5 lg:grid-cols-[64px_110px_90px_200px_1fr] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${getBackgroundColor()}`}
-      >
-        <div className="pl-4">{index + 1}</div>
+      <div className={`grid grid-cols-5 lg:grid-cols-[64px_110px_90px_200px_1fr] gap-2 items-center text-sm py-1 px-1 rounded-md mb-1 ${getBackgroundColor()}`}>
+        {/* Option number + tooltip */}
+        <div className="pl-4 flex items-center gap-1 relative group">
+          {index + 1}
+          {option.description && (
+            <>
+              <i className="fa-regular fa-circle-info text-sm text-gray-400 hover:text-gray-600 cursor-pointer" />
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 
+                              bg-black text-white text-xs rounded px-2 py-1 
+                              opacity-0 group-hover:opacity-100 transition-opacity duration-200 
+                              pointer-events-none z-50 whitespace-nowrap shadow-md">
+                {option.description}
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="pl-2 truncate">{option.term}</div>
-        
-        {/* Billing column with "Free" text for free trials */}
+
         <div className="truncate">
           {isFreeTrialOption ? "Free" : option.billing}
         </div>
 
-        {/* Licence control - MVP VERSION: No auto-save on +/- buttons */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 p-1 rounded-lg border border-gray-300 bg-white flex-shrink-0">
-            {/* Minus button - NO AUTO-SAVE */}
             <button
               disabled={!isQtyNumber || parsedQty <= minQty}
               onClick={() => {
                 if (!isQtyNumber) return;
-                const newQty = parsedQty - 1;
-                setInputQty(newQty);
-                // MVP: No auto-save, just update the input state
+                setInputQty(parsedQty - 1);
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || parsedQty <= minQty
@@ -140,36 +109,22 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               −
             </button>
 
-            {/* Input field - NO AUTO-SAVE */}
             <input
               type="number"
               inputMode="numeric"
               value={inputQty}
               onChange={(e) => setInputQty(e.target.value)}
-              // MVP: Remove onBlur auto-save
-              onKeyDown={(e) => {
-                // MVP: Remove auto-save on Enter
-                if (e.key === 'Enter') {
-                  e.target.blur();
-                }
-              }}
+              onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
               className={`w-10 text-center text-sm font-bold bg-transparent border-none focus:outline-none
                 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none
                 ${showValidationError ? 'text-red-600' : 'text-gray-800'}`}
             />
 
-            {/* Plus button - NO AUTO-SAVE */}
             <button
-              disabled={
-                !isQtyNumber ||
-                (typeof maxQty === "number" && parsedQty >= maxQty)
-              }
+              disabled={!isQtyNumber || (typeof maxQty === "number" && parsedQty >= maxQty)}
               onClick={() => {
                 if (!isQtyNumber) return;
-                if (typeof maxQty === "number" && parsedQty >= maxQty) return;
-                const newQty = parsedQty + 1;
-                setInputQty(newQty);
-                // MVP: No auto-save, just update the input state
+                setInputQty(parsedQty + 1);
               }}
               className={`w-8 h-8 flex items-center justify-center rounded-md text-white font-medium text-sm ${
                 !isQtyNumber || (typeof maxQty === "number" && parsedQty >= maxQty)
@@ -189,13 +144,11 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
           )}
         </div>
 
-        {/* Price + Actions combined column */}
         <div className="flex items-center justify-between pr-2">
           <div className="font-medium">
             {isFreeTrialOption ? "£0" : `£${option.price}`}
           </div>
           <div className="flex gap-2">
-            {/* MVP: Always show Add/Update button when there are changes or not selected */}
             {!current || hasChanged ? (
               <button
                 className={`px-2 py-1 flex items-center justify-center rounded-md text-sm font-medium w-[70px] h-8 border-2 transition-colors ${
@@ -211,7 +164,6 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 disabled={!isValid || isLoading}
                 title={!isValid ? validationMessage : ""}
               >
-                {/* White animated loading icon */}
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-1">
                     <div className="w-1 h-1 bg-white rounded-full animate-bounce"></div>
@@ -223,16 +175,13 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
                 )}
               </button>
             ) : (
-              /* Show solid fill with check mark when selected and no changes */
               <button
                 className="px-2 py-1 flex items-center justify-center text-white rounded-md text-xs font-medium w-[70px] h-8 bg-[#A34796] border-2 border-[#A34796] hover:bg-[#8a3985] hover:border-[#8a3985]"
                 onClick={handleRemove}
               >
-                <FaCheck className="text-xs" />
+                <i className="fa-solid fa-check text-xs" />
               </button>
             )}
-
-            {/* Remove button */}
             <button
               className={`w-8 h-8 flex items-center justify-center rounded-md border bg-white flex-shrink-0 ${
                 isSelected
@@ -243,13 +192,12 @@ export default function AddonTableRow({ option, index, groupId, isLast }) {
               disabled={!isSelected}
               title="Remove"
             >
-              <FaTrash className="text-xs" />
+              <i className="fa-solid fa-trash text-xs" />
             </button>
           </div>
         </div>
       </div>
-      
-      {/* Validation error message */}
+
       {showValidationError && (
         <div className="text-xs text-red-600 mt-1 px-2">
           {validationMessage}

@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { usePlan } from "./PlanContext";
-import { FaTrash } from "react-icons/fa";
 
 export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
   const { addOrUpdate, remove } = usePlan();
 
-  // Find the option number for display (this is just for UI display)
   const getOptionDisplayNumber = () => {
-    // For MS365 products, extract number from IDs like "standard-1", "premium-2", etc.
     if (typeof optionId === 'string' && optionId.includes('-')) {
       const parts = optionId.split('-');
-      return parts[parts.length - 1]; // Get the last part (the number)
+      return parts[parts.length - 1];
     }
-    // For simple numeric IDs, just return the ID
     return optionId;
   };
 
   const displayNumber = getOptionDisplayNumber();
-
-  // Use EXACT same logic as left panel
   const minQty = opt.min || 0;
   const maxQty = opt.max;
   const committedQty = opt.qty ?? null;
@@ -29,26 +23,16 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
     setInputQty(committedQty ?? fallback);
   }, [committedQty, opt.min]);
 
-  // EXACT same logic as left panel
   const parsedQty = Number(inputQty);
   const isQtyNumber = !isNaN(parsedQty);
-  
-  // Enhanced validation logic
-  const isWithinRange = isQtyNumber && 
-    parsedQty >= minQty && 
-    (maxQty === undefined || parsedQty <= maxQty);
-  
+  const isWithinRange = isQtyNumber && parsedQty >= minQty && (maxQty === undefined || parsedQty <= maxQty);
   const isValid = isWithinRange;
   const hasChanged = isQtyNumber && parsedQty !== committedQty;
   const isSelected = !!committedQty;
-
-  // Check if this is a free trial option
   const isFreeTrialOption = opt.billing && opt.billing.includes("Free trial");
 
   const handleSave = () => {
-    // Only allow saving if the quantity is valid
     if (!isValid) return;
-    
     const newQty = parsedQty === 0 && !committedQty ? (minQty || 1) : parsedQty;
     if (isQtyNumber && newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
       addOrUpdate(groupId, optionId, {
@@ -63,7 +47,6 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
     remove(groupId, optionId);
   };
 
-  // Show validation error message
   const showValidationError = isQtyNumber && !isWithinRange;
   let validationMessage = "";
   if (showValidationError) {
@@ -84,24 +67,20 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
       </div>
 
       <div className="flex items-center justify-between mt-2">
-        {/* License control - EXACT copy from left panel */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-3 p-1 rounded-lg border-2 border-gray-300 bg-white">
-            {/* Minus button - EXACT copy from left panel */}
             <button
               disabled={!isQtyNumber || parsedQty <= minQty}
               onClick={() => {
                 if (!isQtyNumber) return;
                 const newQty = parsedQty - 1;
                 setInputQty(newQty);
-                // Auto-save when using +/- buttons, or remove if going below minimum
                 if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
                     qty: newQty,
                   });
                 } else if (newQty < minQty && committedQty) {
-                  // Remove the item if quantity goes below minimum
                   remove(groupId, optionId);
                 }
               }}
@@ -114,28 +93,24 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
               −
             </button>
 
-            {/* Input field - EXACT copy from left panel with validation styling */}
             <input
               type="number"
               inputMode="numeric"
               value={inputQty}
               onChange={(e) => setInputQty(e.target.value)}
               onBlur={() => {
-                // Auto-save when user finishes typing (loses focus)
                 if (isQtyNumber && isWithinRange) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
                     qty: parsedQty,
                   });
                 } else if (parsedQty < minQty && committedQty) {
-                  // Remove if below minimum
                   remove(groupId, optionId);
                 }
               }}
               onKeyDown={(e) => {
-                // Auto-save when user presses Enter
                 if (e.key === 'Enter') {
-                  e.target.blur(); // This will trigger onBlur
+                  e.target.blur();
                 }
               }}
               className={`w-8 text-center text-sm font-bold bg-transparent border-none focus:outline-none
@@ -143,7 +118,6 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
                 ${showValidationError ? 'text-red-600' : 'text-gray-800'}`}
             />
 
-            {/* Plus button - EXACT copy from left panel */}
             <button
               disabled={
                 !isQtyNumber ||
@@ -154,7 +128,6 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
                 if (typeof maxQty === "number" && parsedQty >= maxQty) return;
                 const newQty = parsedQty + 1;
                 setInputQty(newQty);
-                // Auto-save when using +/- buttons
                 if (newQty >= minQty && (maxQty === undefined || newQty <= maxQty)) {
                   addOrUpdate(groupId, optionId, {
                     ...opt,
@@ -180,7 +153,6 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
           )}
         </div>
 
-        {/* Buttons - moved to right side */}
         <div className="flex gap-2">
           {hasChanged ? (
             <button
@@ -204,13 +176,12 @@ export default function RightPanelRow({ groupId, optionId, opt, isDebug }) {
               disabled={!isSelected}
               title="Remove"
             >
-              <FaTrash className="text-sm" />
+              <i className="fa-solid fa-trash text-sm" />
             </button>
           )}
         </div>
       </div>
-      
-      {/* Validation error message */}
+
       {showValidationError && (
         <div className="text-xs text-red-600 mt-1">
           {validationMessage}

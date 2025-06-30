@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { usePlan } from "./PlanContext";
 import RightPanelRow from "./RightPanelRow";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 
 export default function RightPanel() {
   const { selected, remove } = usePlan();
@@ -72,9 +71,9 @@ export default function RightPanel() {
               >
                 <div className="flex items-start gap-2 flex-1 min-w-0">
                   {isExpanded ? (
-                    <FaChevronDown className="text-sm mt-1" />
+                    <i className="fa-solid fa-chevron-down text-sm mt-1" />
                   ) : (
-                    <FaChevronRight className="text-sm mt-1" />
+                    <i className="fa-solid fa-chevron-right text-sm mt-1" />
                   )}
                   <div className="flex flex-col flex-1 min-w-0">
                     <div className="font-semibold break-words">
@@ -112,7 +111,7 @@ export default function RightPanel() {
                     <RightPanelRow
                       key={`${groupId}-${actualOptionId}`}
                       groupId={groupId}
-                      optionId={actualOptionId}  // Use the actual option ID, not index + 1
+                      optionId={actualOptionId}
                       opt={opt}
                     />
                   ))}

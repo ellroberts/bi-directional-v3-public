@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import AddonTableRow from "./AddonTableRow";
 import { usePlan } from "./PlanContext";
 
@@ -36,9 +35,9 @@ export default function ItemGroup({ group, index }) {
       >
         <div className="flex items-start gap-2 flex-1 min-w-0">
           {isOpen ? (
-            <FaChevronDown className="text-sm mt-1" />
+            <i className="fa-solid fa-chevron-down text-sm mt-1" />
           ) : (
-            <FaChevronRight className="text-sm mt-1" />
+            <i className="fa-solid fa-chevron-right text-sm mt-1" />
           )}
           <div className="flex flex-col relative w-full">
             <div className="flex justify-between items-center w-full">
@@ -63,7 +62,7 @@ export default function ItemGroup({ group, index }) {
 
       {/* Table */}
       {isOpen && group.options.length > 0 && (
-        <div className="border border-gray-300 rounded-md overflow-hidden mt-3 p-2">
+        <div className="border border-gray-300 rounded-md overflow-visible relative mt-3 p-2">
           {/* 5-COLUMN LAYOUT */}
           <div className="grid grid-cols-5 lg:grid-cols-[64px_110px_90px_200px_1fr] gap-2 px-2 text-sm font-semibold text-white bg-[#706685] border-b py-3 rounded mb-1">
             <div className="pl-4">Option</div>
@@ -93,7 +92,6 @@ export default function ItemGroup({ group, index }) {
               </button>
             </div>
           )}
-
         </div>
       )}
     </div>

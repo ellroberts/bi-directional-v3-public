@@ -1,5 +1,4 @@
 import React from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   console.log("✅ Pagination rendered"); // Debug marker
@@ -13,7 +12,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         disabled={currentPage === 1}
         className="px-3 py-1 border rounded disabled:opacity-50"
       >
-        <FaChevronLeft />
+        <i className="fa-solid fa-chevron-left" />
       </button>
 
       {pages.map((page) => (
@@ -33,7 +32,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         disabled={currentPage === totalPages}
         className="px-3 py-1 border rounded disabled:opacity-50"
       >
-        <FaChevronRight />
+        <i className="fa-solid fa-chevron-right" />
       </button>
     </div>
   );

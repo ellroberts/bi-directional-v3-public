@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
-import { FaChevronDown } from "react-icons/fa";
 
 const SEGMENT_OPTIONS = ["Commercial", "Education", "Government", "Non-profit"];
 
@@ -30,7 +29,7 @@ export default function SegmentSelect({ onOpenChange }) {
           <span className="flex items-center gap-2">
             {selected}
           </span>
-          <FaChevronDown className="text-xs ml-auto" />
+          <i className="fa-solid fa-chevron-down text-xs ml-auto" />
         </button>
       </Popover.Trigger>
 

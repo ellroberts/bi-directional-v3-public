@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FaSearch, FaTimes, FaChevronDown } from "react-icons/fa";
 import SegmentSelect from "./SegmentSelect";
 
 export default function TopSection({ 
@@ -51,7 +50,7 @@ export default function TopSection({
                 <span className="flex items-center gap-2">
                   {viewOptions.find(opt => opt.value === view)?.label}
                 </span>
-                <FaChevronDown className="text-xs ml-auto" />
+                <i className="fa-solid fa-chevron-down text-xs ml-auto" />
               </button>
               
               {viewOpen && (
@@ -114,12 +113,12 @@ export default function TopSection({
                 className="border border-gray-200 rounded px-3 py-2 text-sm w-full pr-8 h-full focus:outline-none focus:border-black"
               />
               {searchTerm ? (
-                <FaTimes
+                <i
                   onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm cursor-pointer hover:text-gray-700"
+                  className="fa-solid fa-xmark absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm cursor-pointer hover:text-gray-700"
                 />
               ) : (
-                <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <i className="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
               )}
             </div>
           </div>

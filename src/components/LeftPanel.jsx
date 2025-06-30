@@ -1,43 +1,42 @@
 import React from "react";
 import { usePlan } from "./PlanContext";
 import ItemGroup from "./ItemGroup";
-import { FaThLarge } from "react-icons/fa";
 
 const data = [
   {
     name: "MS365 Business Basic",
     id: "ms365",
     options: [
-      { id: "1", term: "Monthly", billing: "Monthly", price: 7, min: 10 },
-      { id: "2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
-      { id: "3", term: "Annual", billing: "Annual", price: 7, min: 0 },
+      { id: "1", term: "Monthly", billing: "Monthly", price: 7, min: 10, description: "Best for small businesses starting out" },
+      { id: "2", term: "Monthly", billing: "Annual", price: 7, min: 0, description: "Monthly billing, annual plan" },
+      { id: "3", term: "Annual", billing: "Annual", price: 7, min: 0, description: "Best value annual plan" },
     ],
   },
   {
     name: "MS365 Business Standard",
     id: "standard",
     options: [
-      { id: "standard-1", term: "Monthly", billing: "Monthly", price: 7, min: 10, max: 50 },
-      { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
-      { id: "standard-3", term: "Annual", billing: "Monthly", price: 7, min: 0 },
-      { id: "standard-4", term: "Annual", billing: "Annual", price: 7, min: 0 },
+      { id: "standard-1", term: "Monthly", billing: "Monthly", price: 7, min: 10, max: 50, description: "Mid-tier productivity tools" },
+      { id: "standard-2", term: "Monthly", billing: "Annual", price: 7, min: 0, description: "Monthly access, yearly commitment" },
+      { id: "standard-3", term: "Annual", billing: "Monthly", price: 7, min: 0, description: "Annual plan, paid monthly" },
+      { id: "standard-4", term: "Annual", billing: "Annual", price: 7, min: 0, description: "Full annual upfront billing" },
     ],
   },
   {
     name: "MS365 Business Premium",
     id: "premium",
     options: [
-      { id: "premium-1", term: "Monthly", billing: "Monthly", price: 7, min: 0 },
-      { id: "premium-2", term: "Monthly", billing: "Annual", price: 7, min: 0 },
-      { id: "premium-3", term: "Annual", billing: "Monthly", price: 7, min: 0 },
-      { id: "premium-4", term: "Annual", billing: "Annual", price: 7, min: 0 },
+      { id: "premium-1", term: "Monthly", billing: "Monthly", price: 7, min: 0, description: "Premium monthly tools" },
+      { id: "premium-2", term: "Monthly", billing: "Annual", price: 7, min: 0, description: "Billed monthly on a yearly plan" },
+      { id: "premium-3", term: "Annual", billing: "Monthly", price: 7, min: 0, description: "Commit annually, pay monthly" },
+      { id: "premium-4", term: "Annual", billing: "Annual", price: 7, min: 0, description: "Annual billing for premium" },
     ],
   },
   {
     name: "Dynamics 365 Finance Premium (30-day trial)",
     id: "dynamics-finance-premium-trial",
     options: [
-      { id: "1", term: "Monthly", billing: "Free trial", price: 0, min: 25, max: 25 },
+      { id: "1", term: "Monthly", billing: "Free trial", price: 0, min: 25, max: 25, description: "Try for 30 days with full features" },
     ],
   },
 ];
@@ -75,7 +74,7 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
     return (
       <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
         <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
-          <FaThLarge className="text-2xl text-[#A34796]" />
+          <i className="fa-solid fa-th-large text-2xl text-[#A34796]" />
         </div>
         <div className="text-lg font-semibold text-black space-y-6">
           <div className="max-w-md mx-auto">
@@ -134,7 +133,7 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
       ) : (
         <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
           <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
-            <FaThLarge className="text-2xl text-[#A34796]" />
+            <i className="fa-solid fa-th-large text-2xl text-[#A34796]" />
           </div>
           <div className="text-lg font-semibold text-black space-y-6">
             <div className="max-w-md mx-auto">
