@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
+import ProgressStepper from "../components/ProgressStepper";
 
-export default function Summary() {
-  const navigate = useNavigate();
+export default function AddOns() {
   const [customerType, setCustomerType] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -16,17 +15,12 @@ export default function Summary() {
 
   const leftContent = (
     <div className="bg-white p-4 rounded space-y-4 w-full">
-      <button
-        onClick={() => navigate("/cloud-customer")}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Start Prototype Again
-      </button>
+     
     </div>
   );
 
   const rightContent = (
-    <div className="bg-gray-200 p-4 rounded min-h-[200px]">
+    <div className="bg-gray-200 p-4 rounded min-h-[200px]">  
       {/* Optional helper or summary panel */}
     </div>
   );
@@ -34,11 +28,11 @@ export default function Summary() {
   return (
     <PageWrapper>
       <div>
-        <h2 className="text-2xl font-bold">Summary</h2>
-        <p className="text-gray-700">Here’s a recap of all selected options.</p>
+        <h2 className="text-2xl font-bold">Add Ons</h2>
+        <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
 
-      {/* Stepper removed from this page */}
+      <ProgressStepper activeStep="Add Ons" />
 
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>
