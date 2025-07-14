@@ -22,7 +22,7 @@ function AppContent() {
       <div className="max-w-[1200px] mx-auto px-4 py-6 flex flex-col space-y-4 min-h-screen">
         <h2 className="text-2xl font-bold">Products</h2>
 
-        <DebugToggle />
+       <DebugToggle />
 
         <div className="flex flex-col md:flex-row gap-6 flex-grow">
           {/* Left Column */}

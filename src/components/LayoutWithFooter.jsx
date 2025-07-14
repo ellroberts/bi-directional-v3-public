@@ -17,17 +17,17 @@ export default function LayoutWithFooter() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex-grow">
-        <Outlet />
-      </div>
-      {showFooter && (
-        <FooterNav
-          canContinue={canContinue}
-          onContinue={onContinue}
-          showBack={showBack}
-          onBack={onBack}
-        />
-      )}
-    </div>
-  );
+  <div className="flex-grow">
+    <Outlet />
+  </div>
+  {showFooter && (
+    <FooterNav
+      canContinue={canContinue}
+      onContinue={onContinue}
+      showBack={showBack}
+      onBack={onBack}
+    />
+  )}
+</div>
+  );  
 }

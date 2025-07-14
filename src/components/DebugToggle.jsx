@@ -4,6 +4,10 @@ import { useDebug } from "./DebugContext";
 export default function DebugToggle() {
   const { isRedline, setIsRedline } = useDebug();
 
+  // 🔒 Hide in shared prototype mode
+  const HIDE_FOR_PUBLIC = true;
+  if (HIDE_FOR_PUBLIC) return null;
+
   return (
     <div className="fixed bottom-4 left-4 z-50">
       <button

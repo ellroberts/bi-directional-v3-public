@@ -1,29 +1,31 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
 import Select from "react-select";
 import { FooterNavContext } from "../components/FooterNavContext";
+import { CloudCustomerFormContext } from "../context/CloudCustomerFormContext";
 
 export default function CloudCustomer() {
-  const [customerType, setCustomerType] = useState("existing");
-  const [selectedExistingCustomer, setSelectedExistingCustomer] = useState(null);
-  const [customerName, setCustomerName] = useState("");
-  const [msCustomerTypes, setMsCustomerTypes] = useState({
-    commercial: true,
-    education: false,
-    government: false,
-    nonprofit: false,
-  });
-
-  const [stepValid, setStepValid] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    customerType,
+    setCustomerType,
+    selectedExistingCustomer,
+    setSelectedExistingCustomer,
+    customerName,
+    setCustomerName,
+    msCustomerTypes,
+    setMsCustomerTypes,
+  } = useContext(CloudCustomerFormContext);
 
   const {
     setCanContinue,
     setOnContinue,
-    setShowBack
+    setShowBack,
+    setOnBack,
   } = useContext(FooterNavContext);
 
   const existingCustomerOptions = [
@@ -47,14 +49,21 @@ export default function CloudCustomer() {
 
   useEffect(() => {
     const complete = isStepComplete();
-    setStepValid(complete);
     setCanContinue(complete);
     setOnContinue(() => () => navigate("/reseller-prerequisites"));
-    setShowBack(false);
+
+    setShowBack(true);
+    setOnBack(() => () => {
+      // Replace this with your actual "exit flow" route
+      navigate("/");
+    });
+
+    return () => {
+      setOnBack(null);
+    };
   }, [customerType, selectedExistingCustomer, customerName, msCustomerTypes]);
 
   const handleStepClick = (stepName) => {
-    if (!isStepComplete()) return;
     const routeMap = {
       "Cloud Customer": "/cloud-customer",
       "Reseller prerequisites": "/reseller-prerequisites",
@@ -64,8 +73,12 @@ export default function CloudCustomer() {
       "Add Ons": "/add-ons",
       "End Date Alignment": "/end-date-alignment",
     };
-    const path = routeMap[stepName];
-    if (path) navigate(path);
+    const steps = Object.keys(routeMap);
+    const currentStepIndex = steps.indexOf("Cloud Customer");
+    const targetStepIndex = steps.indexOf(stepName);
+    if (targetStepIndex <= currentStepIndex) {
+      navigate(routeMap[stepName]);
+    }
   };
 
   const toggleMsType = (type) => {
@@ -185,7 +198,10 @@ export default function CloudCustomer() {
         <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
 
-      <ProgressStepper activeStep="Cloud Customer" onStepClick={handleStepClick} />
+      <ProgressStepper
+        activeStep="Cloud Customer"
+        onStepClick={handleStepClick}
+      />
 
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>
