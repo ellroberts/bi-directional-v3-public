@@ -41,8 +41,10 @@ const data = [
   },
 ];
 
-export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly, searchTerm = "" }) {
+export default function LeftPanel({ view, setView, searchTerm = "" }) {
   const { selected } = usePlan();
+
+  const selectedOnly = view === "selected";
 
   const filteredData = data.filter(service => {
     const selectedGroup = selected[service.id];
@@ -87,15 +89,12 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
               {selectedOnly ? (
                 <>
                   <button
-                    onClick={() => {
-                      setSelectedOnly(false);
-                      setView("all");
-                    }}
+                    onClick={() => setView("all")}
                     className="text-[#A34796] hover:underline font-medium"
                   >
                     Add products
                   </button>
-                  , then tick Selected only to view only those Items.
+                  , then choose “Selected only” from the View dropdown.
                 </>
               ) : (
                 <>
@@ -106,10 +105,7 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
                   <br /><br />
                   In the meantime,{" "}
                   <button
-                    onClick={() => {
-                      setSelectedOnly(false);
-                      setView("all");
-                    }}
+                    onClick={() => setView("all")}
                     className="text-[#A34796] hover:underline font-medium"
                   >
                     explore all
