@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
-import FooterNav from "../components/FooterNav";
 import Select from "react-select";
+import { FooterNavContext } from "../components/FooterNavContext";
 
 export default function CloudCustomer() {
   const [customerType, setCustomerType] = useState("existing");
   const [selectedExistingCustomer, setSelectedExistingCustomer] = useState(null);
   const [customerName, setCustomerName] = useState("");
-  const [creationMessage, setCreationMessage] = useState("");
   const [msCustomerTypes, setMsCustomerTypes] = useState({
     commercial: true,
     education: false,
@@ -18,7 +17,14 @@ export default function CloudCustomer() {
     nonprofit: false,
   });
 
+  const [stepValid, setStepValid] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    setCanContinue,
+    setOnContinue,
+    setShowBack
+  } = useContext(FooterNavContext);
 
   const existingCustomerOptions = [
     { value: "glassware", label: "Clear Glassware Ltd" },
@@ -33,22 +39,22 @@ export default function CloudCustomer() {
     if (customerType === "existing") {
       return selectedExistingCustomer !== null;
     }
-
     if (customerType === "new") {
-      const hasName = customerName.trim() !== "";
-      const hasType = Object.values(msCustomerTypes).some(Boolean);
-      return hasName && hasType;
+      return customerName.trim() !== "" && Object.values(msCustomerTypes).some(Boolean);
     }
-
     return false;
   };
 
-  const handleStepClick = (stepName) => {
-    if (!isStepComplete()) {
-      setCreationMessage("⚠️ Please complete this step before continuing.");
-      return;
-    }
+  useEffect(() => {
+    const complete = isStepComplete();
+    setStepValid(complete);
+    setCanContinue(complete);
+    setOnContinue(() => () => navigate("/reseller-prerequisites"));
+    setShowBack(false);
+  }, [customerType, selectedExistingCustomer, customerName, msCustomerTypes]);
 
+  const handleStepClick = (stepName) => {
+    if (!isStepComplete()) return;
     const routeMap = {
       "Cloud Customer": "/cloud-customer",
       "Reseller prerequisites": "/reseller-prerequisites",
@@ -69,27 +75,9 @@ export default function CloudCustomer() {
     }));
   };
 
-  const handleCreateSubmit = () => {
-    if (!customerName.trim()) {
-      setCreationMessage("⚠️ Customer name is required.");
-      return;
-    }
-
-    const selectedTypes = Object.entries(msCustomerTypes)
-      .filter(([_, checked]) => checked)
-      .map(([type]) => type)
-      .join(", ");
-
-    setCreationMessage(`✅ Customer "${customerName}" created with types: ${selectedTypes}`);
-    setCustomerName("");
-  };
-
   const OptionCard = ({ type, label }) => (
     <div
-      onClick={() => {
-        setCustomerType(type);
-        setCreationMessage(""); // Clear messages when switching
-      }}
+      onClick={() => setCustomerType(type)}
       className={`cursor-pointer border rounded p-4 w-full text-center font-medium text-sm transition
         ${
           customerType === type
@@ -166,25 +154,6 @@ export default function CloudCustomer() {
               ))}
             </div>
           </div>
-
-          <button
-            onClick={handleCreateSubmit}
-            className="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700 text-sm"
-          >
-            Create
-          </button>
-
-          {creationMessage && (
-            <div
-              className={`mt-4 text-sm rounded border px-3 py-2 ${
-                creationMessage.startsWith("✅")
-                  ? "bg-green-100 text-green-800 border-green-300"
-                  : "bg-yellow-100 text-yellow-800 border-yellow-300"
-              }`}
-            >
-              {creationMessage}
-            </div>
-          )}
         </div>
       )}
     </div>
@@ -219,11 +188,6 @@ export default function CloudCustomer() {
       <ProgressStepper activeStep="Cloud Customer" onStepClick={handleStepClick} />
 
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
-
-      <FooterNav
-        continueDisabled={!isStepComplete()}
-        onContinue={() => navigate("/reseller-prerequisites")}
-      />
     </PageWrapper>
   );
 }

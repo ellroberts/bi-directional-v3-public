@@ -1,13 +1,18 @@
-// src/components/LayoutWithFooter.jsx
-import React from "react";
+import React, { useContext } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import FooterNav from "./FooterNav";
+import { FooterNavContext } from "./FooterNavContext";
 
 export default function LayoutWithFooter() {
   const location = useLocation();
+  const {
+    canContinue,
+    onContinue,
+    showBack,
+    onBack
+  } = useContext(FooterNavContext);
 
-  // You can customize which pages show the footer if needed
-  const hideFooterOn = ["/summary"]; // Example if needed
+  const hideFooterOn = ["/summary"];
   const showFooter = !hideFooterOn.includes(location.pathname);
 
   return (
@@ -15,7 +20,14 @@ export default function LayoutWithFooter() {
       <div className="flex-grow">
         <Outlet />
       </div>
-      {showFooter && <FooterNav />}
+      {showFooter && (
+        <FooterNav
+          canContinue={canContinue}
+          onContinue={onContinue}
+          showBack={showBack}
+          onBack={onBack}
+        />
+      )}
     </div>
   );
 }
