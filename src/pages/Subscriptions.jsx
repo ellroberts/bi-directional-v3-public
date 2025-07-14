@@ -31,6 +31,7 @@ function SubscriptionsContent() {
   const { selected } = usePlan();
   const navigate = useNavigate();
 
+  // ✅ Enable Back + Continue logic
   useEffect(() => {
     setCanContinue(true);
     setOnContinue(() => () => navigate("/add-ons"));
@@ -42,7 +43,7 @@ function SubscriptionsContent() {
       setOnContinue(null);
       setOnBack(null);
     };
-  }, []);
+  }, [navigate, setCanContinue, setOnContinue, setShowBack, setOnBack]);
 
   const handleStepClick = (stepName) => {
     const routeMap = {
@@ -74,7 +75,7 @@ function SubscriptionsContent() {
     <div className="bg-white p-4 rounded shadow space-y-6 w-full min-h-[calc(100vh-200px)]">
       <DebugToggle />
 
-      {/* ✅ Hide all filters in ALL empty states */}
+      {/* Hide filters on empty states */}
       {!isEmptyState && (
         <TopSection
           view={view}
@@ -95,7 +96,6 @@ function SubscriptionsContent() {
         setSearchTerm={setSearchTerm}
       />
 
-      {/* ✅ Hide pagination on all empty states */}
       {!isEmptyState && (
         <div className="pt-4 border-t">
           <Pagination

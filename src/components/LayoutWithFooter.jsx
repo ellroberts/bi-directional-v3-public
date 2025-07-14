@@ -1,33 +1,21 @@
-import React, { useContext } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import FooterNav from "./FooterNav";
-import { FooterNavContext } from "./FooterNavContext";
+import HeaderBar from "./HeaderBar";
 
 export default function LayoutWithFooter() {
-  const location = useLocation();
-  const {
-    canContinue,
-    onContinue,
-    showBack,
-    onBack
-  } = useContext(FooterNavContext);
-
-  const hideFooterOn = ["/summary"];
-  const showFooter = !hideFooterOn.includes(location.pathname);
-
   return (
-    <div className="min-h-screen flex flex-col">
-  <div className="flex-grow">
-    <Outlet />
-  </div>
-  {showFooter && (
-    <FooterNav
-      canContinue={canContinue}
-      onContinue={onContinue}
-      showBack={showBack}
-      onBack={onBack}
-    />
-  )}
-</div>
-  );  
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* ✅ Header */}
+      <HeaderBar />
+
+      {/* ✅ Main content grows to fill space */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
+      {/* ✅ Footer */}
+      <FooterNav />
+    </div>
+  );
 }

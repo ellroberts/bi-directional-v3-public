@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
+import { FooterNavContext } from "./FooterNavContext";
 
-export default function FooterNav({
-  canContinue = false,
-  onContinue,
-  showBack = true,
-  onBack,
-  backLabel = "Back",
-}) {
+export default function FooterNav() {
+  const {
+    canContinue,
+    onContinue,
+    showBack,
+    onBack,
+    backLabel = "Back",
+  } = useContext(FooterNavContext);
+
   return (
-    <footer className="sticky bottom-0 w-full bg-white border-t py-4 mt-4">
+    <footer className="sticky bottom-0 w-full bg-white border-t py-4 mt-4 z-10">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-6">
         {showBack ? (
           <button
