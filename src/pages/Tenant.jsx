@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
@@ -8,6 +9,23 @@ export default function Tenant() {
   const [createNewTenant, setCreateNewTenant] = useState(false);
   const [domainPrefix, setDomainPrefix] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
+
+  const navigate = useNavigate(); // ✅ Enables programmatic navigation
+
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment"
+    };
+    const path = routeMap[stepName];
+    if (path) navigate(path);
+  };
+
 
   const isLinkMode = hasExistingTenant && !createNewTenant;
   const isCreateMode = createNewTenant && !hasExistingTenant;
@@ -115,11 +133,12 @@ export default function Tenant() {
     <PageWrapper>
       <div>
         <h2 className="text-2xl font-bold">Tenant</h2>
-        <p className="text-gray-700">Set up details for your tenant or link to an existing one.</p>
+        <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
-
-      <ProgressStepper activeStep="Tenant" />
+  
+      <ProgressStepper activeStep="Tenant" onStepClick={handleStepClick} />
+  
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>
   );
-}
+  }

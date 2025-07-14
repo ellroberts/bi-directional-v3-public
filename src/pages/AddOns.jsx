@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
@@ -6,6 +7,23 @@ import ProgressStepper from "../components/ProgressStepper";
 export default function AddOns() {
   const [customerType, setCustomerType] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const navigate = useNavigate(); // ✅ Enables programmatic navigation
+
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment"
+    };
+    const path = routeMap[stepName];
+    if (path) navigate(path);
+  };
+
 
   const customerOptions = [
     { value: "csp", label: "CSP Customer" },
@@ -32,7 +50,7 @@ export default function AddOns() {
         <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
 
-      <ProgressStepper activeStep="Add Ons" />
+      <ProgressStepper activeStep="Add Ons" onStepClick={handleStepClick} />
 
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>

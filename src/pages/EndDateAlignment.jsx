@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
@@ -6,6 +7,23 @@ import ProgressStepper from "../components/ProgressStepper";
 export default function EndDateAlignment() {
   const [addToExisting, setAddToExisting] = useState(false);
   const [alignmentOption, setAlignmentOption] = useState("");
+
+  const navigate = useNavigate(); // ✅ Enables programmatic navigation
+
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment"
+    };
+    const path = routeMap[stepName];
+    if (path) navigate(path);
+  };
+
 
   const today = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
@@ -91,7 +109,8 @@ export default function EndDateAlignment() {
         <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
 
-      <ProgressStepper activeStep="End Date Alignment" />
+      <ProgressStepper activeStep="End Date Alignment" onStepClick={handleStepClick} />
+
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>
   );

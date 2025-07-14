@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
@@ -6,10 +7,24 @@ import ProgressStepper from "../components/ProgressStepper";
 export default function ResellerPrerequisites() {
   const [partnerId, setPartnerId] = useState("");
 
+  const navigate = useNavigate();
+
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment"
+    };
+    const path = routeMap[stepName];
+    if (path) navigate(path);
+  };
+
   const handleViewTerms = () => {
-    // You can replace this with a modal, external link, or download
     alert("Opening Service Terms PDF...");
-    // Example: window.open('/service-terms.pdf', '_blank');
   };
 
   const leftContent = (
@@ -42,7 +57,10 @@ export default function ResellerPrerequisites() {
   const rightContent = (
     <div className="bg-gray-50 p-4 rounded min-h-[200px] text-sm text-gray-800">
       <h3 className="font-semibold text-lg mb-2">Partner Information</h3>
-      <p>Enter your Partner ID as registered with Microsoft, and make sure to review the Service Terms (SST) before proceeding.</p>
+      <p>
+        Enter your Partner ID as registered with Microsoft, and make sure to review the
+        Service Terms (SST) before proceeding.
+      </p>
     </div>
   );
 
@@ -53,7 +71,7 @@ export default function ResellerPrerequisites() {
         <p className="text-gray-700">Set up details for your cloud customer here.</p>
       </div>
 
-      <ProgressStepper activeStep="Reseller prerequisites" />
+      <ProgressStepper activeStep="Reseller prerequisites" onStepClick={handleStepClick} />
 
       <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
     </PageWrapper>

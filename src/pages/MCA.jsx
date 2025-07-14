@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import TwoColumnLayout from "../components/TwoColumnLayout";
 import ProgressStepper from "../components/ProgressStepper";
@@ -8,6 +9,23 @@ export default function MCA() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dateAgreed, setDateAgreed] = useState("");
+
+  const navigate = useNavigate(); // ✅ Enables programmatic navigation
+
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment"
+    };
+    const path = routeMap[stepName];
+    if (path) navigate(path);
+  };
+
 
   const handleSave = () => {
     if (!firstName || !lastName || !email || !dateAgreed) {
@@ -78,15 +96,16 @@ export default function MCA() {
     </div>
   );
 
-  return (
-    <PageWrapper>
-      <div>
-        <h2 className="text-2xl font-bold">MCA</h2>
-        <p className="text-gray-700">Enter the Microsoft Cloud Agreement details.</p>
-      </div>
+return (
+  <PageWrapper>
+    <div>
+      <h2 className="text-2xl font-bold">MCA</h2>
+      <p className="text-gray-700">Set up details for your cloud customer here.</p>
+    </div>
 
-      <ProgressStepper activeStep="MCA" />
-      <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
-    </PageWrapper>
-  );
+    <ProgressStepper activeStep="MCA" onStepClick={handleStepClick} />
+
+    <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
+  </PageWrapper>
+);
 }

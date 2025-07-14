@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Added for step click navigation
 import LeftPanel from "../components/LeftPanel";
 import RightPanel from "../components/RightPanel";
 import { PlanProvider } from "../components/PlanContext";
@@ -28,6 +29,26 @@ function SubscriptionsContent() {
   const [view, setView] = useState("popular");
   const [selectedOnly, setSelectedOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate(); // ✅ Enables programmatic navigation
+
+  // ✅ Step click handler for ProgressStepper
+  const handleStepClick = (stepName) => {
+    const routeMap = {
+      "Cloud Customer": "/cloud-customer",
+      "Reseller prerequisites": "/reseller-prerequisites",
+      "Tenant": "/tenant",
+      "MCA": "/mca",
+      "Subscriptions": "/subscriptions",
+      "Add Ons": "/add-ons",
+      "End Date Alignment": "/end-date-alignment",
+    };
+
+    const targetPath = routeMap[stepName];
+    if (targetPath) {
+      navigate(targetPath);
+    }
+  };
 
   const leftContent = (
     <div className="bg-white p-4 rounded shadow space-y-6 w-full min-h-[calc(100vh-200px)]">
@@ -71,7 +92,8 @@ function SubscriptionsContent() {
           <p className="text-gray-700">Browse and select products to include in the plan.</p>
         </div>
 
-        <ProgressStepper activeStep="Subscriptions" />
+        {/* ✅ Pass in onStepClick to make steps clickable */}
+        <ProgressStepper activeStep="Subscriptions" onStepClick={handleStepClick} />
 
         <TwoColumnLayout leftContent={leftContent} rightContent={rightContent} />
       </PageWrapper>
