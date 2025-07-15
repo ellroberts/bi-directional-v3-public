@@ -1,21 +1,21 @@
-// src/components/LayoutWithFooter.jsx
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import FooterNav from "./FooterNav";
+import HeaderBar from "./HeaderBar";
 
 export default function LayoutWithFooter() {
-  const location = useLocation();
-
-  // You can customize which pages show the footer if needed
-  const hideFooterOn = ["/summary"]; // Example if needed
-  const showFooter = !hideFooterOn.includes(location.pathname);
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-grow">
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* ✅ Header */}
+      <HeaderBar />
+
+      {/* ✅ Main content grows to fill space */}
+      <main className="flex-grow">
         <Outlet />
-      </div>
-      {showFooter && <FooterNav />}
+      </main>
+
+      {/* ✅ Footer */}
+      <FooterNav />
     </div>
   );
 }

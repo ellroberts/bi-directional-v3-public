@@ -1,45 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SegmentSelect from "./SegmentSelect";
 
 export default function TopSection({ 
   view, 
-  setView, 
-  selectedOnly, 
-  setSelectedOnly,
+  setView,
   searchTerm,
   setSearchTerm 
 }) {
   const [viewOpen, setViewOpen] = useState(false);
   const [segmentOpen, setSegmentOpen] = useState(false);
-  
+
+  const viewDropdownRef = useRef(null);
+
   const viewOptions = [
     { value: "popular", label: "Popular" },
-    { value: "all", label: "All (1000)" }
+    { value: "all", label: "All (1000)" },
+    { value: "selected", label: "Selected only" },
   ];
-  
+
   const handleViewSelect = (value) => {
     setView(value);
     setViewOpen(false);
   };
-  
+
   const handleViewToggle = () => {
     setViewOpen(!viewOpen);
-    setSegmentOpen(false); // Close other dropdown
+    setSegmentOpen(false);
   };
-  
+
   const handleSegmentToggle = (isOpen) => {
     setSegmentOpen(isOpen);
-    if (isOpen) setViewOpen(false); // Close other dropdown
+    if (isOpen) setViewOpen(false);
   };
-  
+
+  // 🧠 Click-away logic for View dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (viewDropdownRef.current && !viewDropdownRef.current.contains(event.target)) {
+        setViewOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="pb-4 border-b">
       <div className="flex flex-wrap items-end justify-between gap-6">
-        {/* View + Selected Only */}
+        {/* View Dropdown */}
         <div>
           <div className="text-sm font-medium mb-1">View</div>
           <div className="h-10 flex items-center gap-3">
-            <div className="relative">
+            <div className="relative" ref={viewDropdownRef}>
               <button
                 onClick={handleViewToggle}
                 className={`flex h-10 w-[200px] items-center justify-between rounded-sm border bg-white px-3 py-2 text-sm text-black focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -52,7 +67,7 @@ export default function TopSection({
                 </span>
                 <i className="fa-solid fa-chevron-down text-xs ml-auto" />
               </button>
-              
+
               {viewOpen && (
                 <div className="absolute top-full left-0 bg-white border border-gray-200 rounded shadow-lg p-2 w-[200px] z-50 mt-1">
                   <ul className="space-y-1">
@@ -69,21 +84,9 @@ export default function TopSection({
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="selected-only"
-                checked={selectedOnly}
-                onChange={(e) => setSelectedOnly(e.target.checked)}
-                className="accent-black w-4 h-4"
-              />
-              <label htmlFor="selected-only" className="text-sm text-black">
-                Selected only
-              </label>
-            </div>
           </div>
         </div>
-        
+
         {/* Segment + Search */}
         <div className="flex items-end gap-4">
           <div>
@@ -101,7 +104,6 @@ export default function TopSection({
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  // Auto-switch to "all" view when searching
                   if (e.target.value && view === "popular") {
                     setView("all");
                   }

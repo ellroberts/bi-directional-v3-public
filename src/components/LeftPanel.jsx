@@ -41,8 +41,10 @@ const data = [
   },
 ];
 
-export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly, searchTerm = "" }) {
+export default function LeftPanel({ view, setView, searchTerm = "", setSearchTerm }) {
   const { selected } = usePlan();
+
+  const selectedOnly = view === "selected";
 
   const filteredData = data.filter(service => {
     const selectedGroup = selected[service.id];
@@ -69,8 +71,10 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
   });
 
   const showPopularEmpty = view === "popular" && !selectedOnly;
+  const showSelectedEmpty = selectedOnly && filteredData.length === 0;
+  const showSearchEmpty = view === "all" && searchTerm.trim() !== "" && filteredData.length === 0;
 
-  if (showPopularEmpty || (selectedOnly && filteredData.length === 0)) {
+  if (showPopularEmpty || showSelectedEmpty || showSearchEmpty) {
     return (
       <div className="flex flex-col items-center justify-center bg-white text-center p-10 rounded-md">
         <div className="w-16 h-16 rounded-full bg-gray-100 mb-6 flex items-center justify-center">
@@ -79,37 +83,48 @@ export default function LeftPanel({ view, setView, selectedOnly, setSelectedOnly
         <div className="text-lg font-semibold text-black space-y-6">
           <div className="max-w-md mx-auto">
             <h3 className="text-xl md:text-2xl font-semibold text-center mb-6">
-              {selectedOnly
+              {showSelectedEmpty
                 ? "Start building your order"
+                : showSearchEmpty
+                ? "No matches found"
                 : "Ready to feature your most popular products?"}
             </h3>
+
             <p className="text-base font-normal text-center mb-6">
-              {selectedOnly ? (
+              {showSelectedEmpty ? (
                 <>
                   <button
-                    onClick={() => {
-                      setSelectedOnly(false);
-                      setView("all");
-                    }}
+                    onClick={() => setView("all")}
                     className="text-[#A34796] hover:underline font-medium"
                   >
                     Add products
                   </button>
-                  , then tick Selected only to view only those Items.
+                  , then choose “Selected only” from the View dropdown.
+                </>
+              ) : showSearchEmpty ? (
+                <>
+                  No matches found.{" "}
+                  <button
+                    onClick={() => {
+                      setSearchTerm("");
+                      setView("all");
+                    }}
+                    className="text-[#A34796] hover:underline font-medium"
+                  >
+                    Clear your search
+                  </button>{" "}
+                  to see all products again.
                 </>
               ) : (
                 <>
                   They’ll appear here once an administrator ticks them in{" "}
-                  <a href="/supply-product-mapping" className="text-[#A34796] hover:underline font-medium">
-                    Supplier Product Mapping.
-                  </a>
+                  <span className="text-[#A34796] font-medium cursor-default">
+                    Supplier Product Mapping
+                  </span>.
                   <br /><br />
                   In the meantime,{" "}
                   <button
-                    onClick={() => {
-                      setSelectedOnly(false);
-                      setView("all");
-                    }}
+                    onClick={() => setView("all")}
                     className="text-[#A34796] hover:underline font-medium"
                   >
                     explore all
